@@ -1,0 +1,30 @@
+# Smart Parking System MVP - GovTech Bhutan
+# Python Package Requirements
+# Generated: December 2025
+# Python Version: 3.12+
+
+# Deep Learning & Computer Vision
+ultralytics>=8.3.0          # YOLOv8 for vehicle detection
+torch>=2.0.0                # PyTorch (required by YOLOv8)
+torchvision>=0.15.0         # Vision utilities for PyTorch
+opencv-python>=4.8.0        # OpenCV for image/video processing
+
+# Numerical Computing
+numpy>=1.24.0               # Numerical arrays and operations
+scipy>=1.11.0               # Scientific computing utilities
+
+# Data Handling
+pillow>=10.0.0              # Image processing library
+pyyaml>=6.0.0               # YAML configuration file support
+
+# Performance & Utilities
+psutil>=5.9.0               # System and process utilities
+matplotlib>=3.7.0           # Plotting and visualization (YOLO dependency)
+
+# Tracking Libraries (for Automatic Mode)
+supervision>=0.16.0         # ByteTrack tracking with YOLO integration
+filterpy>=1.4.5             # Kalman filtering (required by tracking)
+
+# Optional (for enhanced features)
+# pandas>=2.0.0             # Data analysis (if logging to CSV with pandas)
+# tqdm>=4.65.0              # Progress bars
