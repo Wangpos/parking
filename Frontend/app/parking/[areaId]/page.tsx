@@ -160,18 +160,18 @@ export default function ParkingAreaDetailPage() {
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
       {/* Header */}
       <header className="sticky top-0 z-50 border-b border-slate-700/50 bg-slate-900/80 backdrop-blur-xl">
-        <div className="container mx-auto px-4 py-4">
+        <div className="container mx-auto px-4 py-3 sm:py-4">
           <div className="flex items-center justify-between">
             <Button
               onClick={() => router.back()}
               variant="ghost"
-              className="text-slate-300 hover:text-white hover:bg-slate-800"
+              className="text-slate-300 hover:text-white hover:bg-slate-800 text-sm"
             >
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              Back
+              <ArrowLeft className="w-4 h-4 mr-1 sm:mr-2" />
+              <span className="hidden sm:inline">Back</span>
             </Button>
             <div className="flex items-center gap-2">
-              <Badge variant="outline" className="border-purple-500/50 text-purple-400">
+              <Badge variant="outline" className="border-purple-500/50 text-purple-400 text-xs">
                 Zone {areaId}
               </Badge>
               <Badge className={`${
@@ -184,18 +184,18 @@ export default function ParkingAreaDetailPage() {
         </div>
       </header>
 
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 py-6 sm:py-8">
         {/* Area Info Card */}
-        <Card className="mb-6 bg-slate-800/50 border-slate-700 backdrop-blur-xl">
-          <CardHeader>
-            <div className="flex items-start justify-between">
-              <div className="flex items-start gap-4">
-                <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-blue-500 rounded-xl flex items-center justify-center text-3xl">
+        <Card className="mb-4 sm:mb-6 bg-slate-800/50 border-slate-700 backdrop-blur-xl">
+          <CardHeader className="pb-3 sm:pb-6">
+            <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+              <div className="flex items-start gap-3 sm:gap-4">
+                <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br from-purple-500 to-blue-500 rounded-xl flex items-center justify-center text-2xl sm:text-3xl">
                   🅿️
                 </div>
                 <div>
-                  <CardTitle className="text-2xl text-white mb-2">{area.name}</CardTitle>
-                  <div className="flex items-center gap-2 text-slate-400 text-sm mb-2">
+                  <CardTitle className="text-lg sm:text-xl md:text-2xl text-white mb-2">{area.name}</CardTitle>
+                  <div className="flex items-center gap-2 text-slate-400 text-xs sm:text-sm mb-2">
                     <MapPin className="w-4 h-4" />
                     <span>{area.location}</span>
                   </div>
@@ -207,33 +207,33 @@ export default function ParkingAreaDetailPage() {
             </div>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-3 gap-4">
-              <div className="bg-slate-700/30 rounded-lg p-4 text-center">
-                <div className="text-3xl font-bold text-white">{area.totalSlots}</div>
-                <div className="text-sm text-slate-400 mt-1">Total Slots</div>
+            <div className="grid grid-cols-3 gap-3 sm:gap-4">
+              <div className="bg-slate-700/30 rounded-lg p-3 sm:p-4 text-center">
+                <div className="text-2xl sm:text-3xl font-bold text-white">{area.totalSlots}</div>
+                <div className="text-xs sm:text-sm text-slate-400 mt-1">Total Slots</div>
               </div>
-              <div className="bg-green-500/20 border border-green-500/30 rounded-lg p-4 text-center">
-                <div className="text-3xl font-bold text-green-400">{freeSlots}</div>
-                <div className="text-sm text-slate-400 mt-1">Available</div>
+              <div className="bg-green-500/20 border border-green-500/30 rounded-lg p-3 sm:p-4 text-center">
+                <div className="text-2xl sm:text-3xl font-bold text-green-400">{freeSlots}</div>
+                <div className="text-xs sm:text-sm text-slate-400 mt-1">Available</div>
               </div>
-              <div className="bg-red-500/20 border border-red-500/30 rounded-lg p-4 text-center">
-                <div className="text-3xl font-bold text-red-400">{occupiedSlots}</div>
-                <div className="text-sm text-slate-400 mt-1">Occupied</div>
+              <div className="bg-red-500/20 border border-red-500/30 rounded-lg p-3 sm:p-4 text-center">
+                <div className="text-2xl sm:text-3xl font-bold text-red-400">{occupiedSlots}</div>
+                <div className="text-xs sm:text-sm text-slate-400 mt-1">Occupied</div>
               </div>
             </div>
           </CardContent>
         </Card>
 
         {/* Location Map */}
-        <Card className="mb-6 bg-slate-800/50 border-slate-700 backdrop-blur-xl">
-          <CardHeader>
-            <CardTitle className="text-white flex items-center gap-2">
-              <MapPin className="w-5 h-5" />
+        <Card className="mb-4 sm:mb-6 bg-slate-800/50 border-slate-700 backdrop-blur-xl">
+          <CardHeader className="pb-3 sm:pb-6">
+            <CardTitle className="text-white flex items-center gap-2 text-base sm:text-lg">
+              <MapPin className="w-4 h-4 sm:w-5 sm:h-5" />
               Location Map
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="h-[450px] w-full rounded-lg overflow-hidden bg-gray-100 border-2 border-gray-200">
+            <div className="h-[300px] sm:h-[400px] md:h-[450px] w-full rounded-lg overflow-hidden bg-gray-100 border-2 border-gray-200">
               <ParkingMap
                 locations={mapLocation}
                 center={[coords.lat, coords.lng]}
@@ -248,10 +248,10 @@ export default function ParkingAreaDetailPage() {
         </Card>
 
         {/* Parking Map */}
-        <Card className="mb-6 bg-slate-800/50 border-slate-700 backdrop-blur-xl">
-          <CardHeader>
-            <CardTitle className="text-white flex items-center gap-2">
-              <Car className="w-5 h-5" />
+        <Card className="mb-4 sm:mb-6 bg-slate-800/50 border-slate-700 backdrop-blur-xl">
+          <CardHeader className="pb-3 sm:pb-6">
+            <CardTitle className="text-white flex items-center gap-2 text-base sm:text-lg">
+              <Car className="w-4 h-4 sm:w-5 sm:h-5" />
               Parking Map
             </CardTitle>
           </CardHeader>
@@ -267,7 +267,7 @@ export default function ParkingAreaDetailPage() {
               </div>
             </div>
             
-            <div className="grid grid-cols-6 md:grid-cols-8 lg:grid-cols-12 gap-3">
+            <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 lg:grid-cols-12 gap-2 sm:gap-3">
               {area.slots.map((slot) => (
                 <div
                   key={slot.slotId}
@@ -287,27 +287,27 @@ export default function ParkingAreaDetailPage() {
 
         {/* Detailed Slot Information */}
         <Card className="bg-slate-800/50 border-slate-700 backdrop-blur-xl">
-          <CardHeader>
-            <CardTitle className="text-white flex items-center gap-2">
-              <Clock className="w-5 h-5" />
+          <CardHeader className="pb-3 sm:pb-6">
+            <CardTitle className="text-white flex items-center gap-2 text-base sm:text-lg">
+              <Clock className="w-4 h-4 sm:w-5 sm:h-5" />
               Slot Details
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="space-y-3 max-h-[600px] overflow-y-auto">
+            <div className="space-y-2 sm:space-y-3 max-h-[500px] sm:max-h-[600px] overflow-y-auto">
               {area.slots.map((slot) => (
                 <div
                   key={slot.slotId}
-                  className={`p-4 rounded-lg border ${
+                  className={`p-3 sm:p-4 rounded-lg border ${
                     slot.status === "free"
                       ? "bg-green-500/10 border-green-500/30"
                       : "bg-red-500/10 border-red-500/30"
                   }`}
                 >
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                    <div className="flex items-center gap-2 sm:gap-3">
                       <div
-                        className={`w-12 h-12 rounded-lg flex items-center justify-center font-bold ${
+                        className={`w-10 h-10 sm:w-12 sm:h-12 rounded-lg flex items-center justify-center font-bold text-sm sm:text-base ${
                           slot.status === "free" ? "bg-green-500" : "bg-red-500"
                         } text-white`}
                       >

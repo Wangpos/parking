@@ -13,6 +13,7 @@ export const metadata: Metadata = {
   title: "Smart Parking Dashboard",
   description: "AI-Powered Smart Parking Monitoring System",
   generator: "v0.app",
+  viewport: "width=device-width, initial-scale=1, maximum-scale=5",
   icons: {
     icon: [
       {

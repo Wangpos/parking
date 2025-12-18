@@ -28,19 +28,19 @@ export function AnalyticsSection() {
   ]
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-foreground mb-2">Analytics & Insights</h1>
-        <p className="text-muted-foreground">Comprehensive parking system analytics</p>
+        <h1 className="text-xl sm:text-2xl font-bold text-foreground mb-2">Analytics & Insights</h1>
+        <p className="text-sm text-muted-foreground">Comprehensive parking system analytics</p>
       </div>
 
-      <div className="grid grid-cols-2 gap-6">
-        <Card className="bg-card border-border p-6">
-          <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
-            <TrendingUp className="w-5 h-5 text-primary" />
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+        <Card className="bg-card border-border p-4 sm:p-6">
+          <h3 className="text-base sm:text-lg font-semibold text-foreground mb-3 sm:mb-4 flex items-center gap-2">
+            <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
             Occupancy Trend
           </h3>
-          <ResponsiveContainer width="100%" height={300}>
+          <ResponsiveContainer width="100%" height={250}>
             <LineChart data={occupancyData}>
               <CartesianGrid strokeDasharray="3 3" stroke="rgba(100,100,100,0.1)" />
               <XAxis dataKey="time" stroke="rgba(200,200,200,0.5)" style={{ fontSize: "12px" }} />
@@ -53,12 +53,12 @@ export function AnalyticsSection() {
           </ResponsiveContainer>
         </Card>
 
-        <Card className="bg-card border-border p-6">
-          <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
-            <BarChart3 className="w-5 h-5 text-primary" />
+        <Card className="bg-card border-border p-4 sm:p-6">
+          <h3 className="text-base sm:text-lg font-semibold text-foreground mb-3 sm:mb-4 flex items-center gap-2">
+            <BarChart3 className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
             Weekly Violations
           </h3>
-          <ResponsiveContainer width="100%" height={300}>
+          <ResponsiveContainer width="100%" height={250}>
             <BarChart data={violationData}>
               <CartesianGrid strokeDasharray="3 3" stroke="rgba(100,100,100,0.1)" />
               <XAxis dataKey="day" stroke="rgba(200,200,200,0.5)" style={{ fontSize: "12px" }} />
@@ -72,7 +72,7 @@ export function AnalyticsSection() {
         </Card>
       </div>
 
-      <div className="grid grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         <Card className="bg-card border-border p-4">
           <p className="text-xs text-muted-foreground mb-2">Peak Occupancy</p>
           <p className="text-2xl font-bold text-primary">92%</p>

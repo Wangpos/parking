@@ -156,79 +156,79 @@ export default function PublicParkingView() {
 
         {/* Header */}
         <header className="relative z-10 border-b border-slate-700/50 bg-slate-900/50 backdrop-blur-xl">
-          <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-blue-500 rounded-xl flex items-center justify-center shadow-lg">
-                <Car className="w-6 h-6 text-white" />
+          <div className="container mx-auto px-4 py-3 sm:py-4 flex items-center justify-between gap-3">
+            <div className="flex items-center gap-2 sm:gap-3">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-purple-500 to-blue-500 rounded-xl flex items-center justify-center shadow-lg">
+                <Car className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
               </div>
               <div>
-                <h1 className="text-2xl font-bold text-white">Smart Parking</h1>
-                <p className="text-sm text-slate-400">Find Your Perfect Spot</p>
+                <h1 className="text-lg sm:text-2xl font-bold text-white">Smart Parking</h1>
+                <p className="text-xs sm:text-sm text-slate-400 hidden sm:block">Find Your Perfect Spot</p>
               </div>
             </div>
             <Button
               onClick={() => router.push("/login")}
               variant="outline"
-              className="border-purple-500/50 text-purple-400 hover:bg-purple-500/10"
+              className="border-purple-500/50 text-purple-400 hover:bg-purple-500/10 text-xs sm:text-sm px-3 sm:px-4"
             >
-              <Shield className="w-4 h-4 mr-2" />
-              Admin Login
+              <Shield className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
+              <span className="hidden sm:inline">Admin </span>Login
             </Button>
           </div>
         </header>
 
         {/* Stats Section */}
-        <div className="relative z-10 container mx-auto px-4 py-12">
-          <div className="text-center mb-12">
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
+        <div className="relative z-10 container mx-auto px-4 py-8 sm:py-12">
+          <div className="text-center mb-8 sm:mb-12">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-3 sm:mb-4">
               Real-Time Parking Availability
             </h2>
-            <p className="text-lg text-slate-300 max-w-2xl mx-auto">
+            <p className="text-base sm:text-lg text-slate-300 max-w-2xl mx-auto px-4">
               Find available parking spaces instantly with our smart monitoring system
             </p>
           </div>
 
           {/* Stats Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6 mb-8 sm:mb-12">
             <Card className="bg-gradient-to-br from-green-500/10 to-emerald-500/5 border-green-500/30 backdrop-blur-xl transform hover:scale-105 transition-transform">
-              <CardContent className="pt-6">
+              <CardContent className="pt-5 sm:pt-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm text-slate-400 mb-1">Available Spaces</p>
-                    <p className="text-4xl font-bold text-green-400">{totalAvailable}</p>
+                    <p className="text-xs sm:text-sm text-slate-400 mb-1">Available Spaces</p>
+                    <p className="text-3xl sm:text-4xl font-bold text-green-400">{totalAvailable}</p>
                   </div>
-                  <div className="w-16 h-16 bg-green-500/20 rounded-2xl flex items-center justify-center">
-                    <CheckCircle2 className="w-8 h-8 text-green-400" />
+                  <div className="w-12 h-12 sm:w-16 sm:h-16 bg-green-500/20 rounded-2xl flex items-center justify-center">
+                    <CheckCircle2 className="w-6 h-6 sm:w-8 sm:h-8 text-green-400" />
                   </div>
                 </div>
               </CardContent>
             </Card>
 
             <Card className="bg-gradient-to-br from-blue-500/10 to-cyan-500/5 border-blue-500/30 backdrop-blur-xl transform hover:scale-105 transition-transform">
-              <CardContent className="pt-6">
+              <CardContent className="pt-5 sm:pt-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm text-slate-400 mb-1">Total Capacity</p>
-                    <p className="text-4xl font-bold text-blue-400">{totalSlots}</p>
+                    <p className="text-xs sm:text-sm text-slate-400 mb-1">Total Capacity</p>
+                    <p className="text-3xl sm:text-4xl font-bold text-blue-400">{totalSlots}</p>
                   </div>
-                  <div className="w-16 h-16 bg-blue-500/20 rounded-2xl flex items-center justify-center">
-                    <Car className="w-8 h-8 text-blue-400" />
+                  <div className="w-12 h-12 sm:w-16 sm:h-16 bg-blue-500/20 rounded-2xl flex items-center justify-center">
+                    <Car className="w-6 h-6 sm:w-8 sm:h-8 text-blue-400" />
                   </div>
                 </div>
               </CardContent>
             </Card>
 
             <Card className="bg-gradient-to-br from-purple-500/10 to-pink-500/5 border-purple-500/30 backdrop-blur-xl transform hover:scale-105 transition-transform">
-              <CardContent className="pt-6">
+              <CardContent className="pt-5 sm:pt-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm text-slate-400 mb-1">Occupancy Rate</p>
-                    <p className="text-4xl font-bold text-purple-400">
+                    <p className="text-xs sm:text-sm text-slate-400 mb-1">Occupancy Rate</p>
+                    <p className="text-3xl sm:text-3xl sm:text-4xl font-bold text-purple-400">
                       {Math.round((totalOccupied / totalSlots) * 100)}%
                     </p>
                   </div>
-                  <div className="w-16 h-16 bg-purple-500/20 rounded-2xl flex items-center justify-center">
-                    <Clock className="w-8 h-8 text-purple-400" />
+                  <div className="w-12 h-12 sm:w-16 sm:h-16 bg-purple-500/20 rounded-2xl flex items-center justify-center">
+                    <Clock className="w-6 h-6 sm:w-8 sm:h-8 text-purple-400" />
                   </div>
                 </div>
               </CardContent>
@@ -236,51 +236,51 @@ export default function PublicParkingView() {
           </div>
 
           {/* Filters */}
-          <div className="flex flex-col md:flex-row gap-4 mb-8">
+          <div className="flex flex-col gap-3 sm:gap-4 mb-6 sm:mb-8">
             <div className="flex-1">
               <Input
                 type="text"
                 placeholder="Search parking areas..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="bg-slate-800/50 border-slate-700 text-white placeholder:text-slate-500 h-12"
+                className="bg-slate-800/50 border-slate-700 text-white placeholder:text-slate-500 h-10 sm:h-12"
               />
             </div>
-            <div className="flex gap-2">
+            <div className="flex flex-wrap gap-2">
               <Button
                 variant={selectedCategory === "all" ? "default" : "outline"}
                 onClick={() => setSelectedCategory("all")}
-                className={selectedCategory === "all" ? "bg-purple-500 hover:bg-purple-600" : "border-slate-700 text-slate-300"}
+                className={`text-xs sm:text-sm flex-1 sm:flex-none ${selectedCategory === "all" ? "bg-purple-500 hover:bg-purple-600" : "border-slate-700 text-slate-300"}`}
               >
                 All Areas
               </Button>
               <Button
                 variant={selectedCategory === "outdoor" ? "default" : "outline"}
                 onClick={() => setSelectedCategory("outdoor")}
-                className={selectedCategory === "outdoor" ? "bg-purple-500 hover:bg-purple-600" : "border-slate-700 text-slate-300"}
+                className={`text-xs sm:text-sm flex-1 sm:flex-none ${selectedCategory === "outdoor" ? "bg-purple-500 hover:bg-purple-600" : "border-slate-700 text-slate-300"}`}
               >
                 Outdoor
               </Button>
               <Button
                 variant={selectedCategory === "covered" ? "default" : "outline"}
                 onClick={() => setSelectedCategory("covered")}
-                className={selectedCategory === "covered" ? "bg-purple-500 hover:bg-purple-600" : "border-slate-700 text-slate-300"}
+                className={`text-xs sm:text-sm flex-1 sm:flex-none ${selectedCategory === "covered" ? "bg-purple-500 hover:bg-purple-600" : "border-slate-700 text-slate-300"}`}
               >
                 Covered
               </Button>
               <Button
                 variant={selectedCategory === "underground" ? "default" : "outline"}
                 onClick={() => setSelectedCategory("underground")}
-                className={selectedCategory === "underground" ? "bg-purple-500 hover:bg-purple-600" : "border-slate-700 text-slate-300"}
+                className={`text-xs sm:text-sm flex-1 sm:flex-none ${selectedCategory === "underground" ? "bg-purple-500 hover:bg-purple-600" : "border-slate-700 text-slate-300"}`}
               >
                 Underground
               </Button>
               <Button
                 variant={showMap ? "default" : "outline"}
                 onClick={() => setShowMap(!showMap)}
-                className={showMap ? "bg-purple-500 hover:bg-purple-600" : "border-slate-700 text-slate-300"}
+                className={`text-xs sm:text-sm w-full sm:w-auto ${showMap ? "bg-purple-500 hover:bg-purple-600" : "border-slate-700 text-slate-300"}`}
               >
-                <Map className="w-4 h-4 mr-2" />
+                <Map className="w-3 h-3 sm:w-4 sm:h-4 mr-2" />
                 {showMap ? "Hide Map" : "Show Map"}
               </Button>
             </div>
@@ -288,9 +288,9 @@ export default function PublicParkingView() {
 
           {/* Map View */}
           {showMap && (
-            <Card className="mb-8 bg-slate-900/80 border-slate-700/50 backdrop-blur-xl overflow-hidden">
-              <CardHeader>
-                <CardTitle className="text-white flex items-center gap-2">
+            <Card className="mb-6 sm:mb-8 bg-slate-900/80 border-slate-700/50 backdrop-blur-xl overflow-hidden">
+              <CardHeader className="pb-3 sm:pb-6">
+                <CardTitle className="text-white flex items-center gap-2 text-base sm:text-lg">
                   <MapPin className="w-5 h-5" />
                   Parking Areas Map
                 </CardTitle>
@@ -299,7 +299,7 @@ export default function PublicParkingView() {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="h-[500px] rounded-lg overflow-hidden">
+                <div className="h-[300px] sm:h-[400px] md:h-[500px] rounded-lg overflow-hidden">
                   <ParkingMap
                     locations={mapLocations}
                     onMarkerClick={(id) => router.push(`/parking/${id}`)}
@@ -310,7 +310,7 @@ export default function PublicParkingView() {
           )}
 
           {/* Parking Areas Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             {filteredAreas.map((area) => {
               const available = area.slots - area.occupied
               const occupancyPercentage = (area.occupied / area.slots) * 100
@@ -320,26 +320,26 @@ export default function PublicParkingView() {
                   key={area.id}
                   className="bg-slate-900/80 border-slate-700/50 backdrop-blur-xl hover:border-purple-500/50 transition-all duration-300 transform hover:scale-105 hover:shadow-2xl hover:shadow-purple-500/20"
                 >
-                  <CardHeader>
+                  <CardHeader className="pb-3 sm:pb-6">
                     <div className="flex items-start justify-between mb-2">
-                      <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-blue-500 rounded-xl flex items-center justify-center shadow-lg">
-                        <MapPin className="w-6 h-6 text-white" />
+                      <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-purple-500 to-blue-500 rounded-xl flex items-center justify-center shadow-lg">
+                        <MapPin className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                       </div>
                       {getAvailabilityBadge(available)}
                     </div>
-                    <CardTitle className="text-white text-xl">{area.name}</CardTitle>
-                    <CardDescription className="text-slate-400">{area.location}</CardDescription>
+                    <CardTitle className="text-white text-lg sm:text-xl">{area.name}</CardTitle>
+                    <CardDescription className="text-slate-400 text-sm">{area.location}</CardDescription>
                   </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div className="flex items-center justify-between p-4 bg-slate-800/50 rounded-lg">
+                  <CardContent className="space-y-3 sm:space-y-4">
+                    <div className="flex items-center justify-between p-3 sm:p-4 bg-slate-800/50 rounded-lg">
                       <div className="text-center flex-1">
-                        <p className="text-3xl font-bold text-green-400">{available}</p>
-                        <p className="text-sm text-slate-400 mt-1">Available</p>
+                        <p className="text-2xl sm:text-3xl font-bold text-green-400">{available}</p>
+                        <p className="text-xs sm:text-sm text-slate-400 mt-1">Available</p>
                       </div>
-                      <div className="w-px h-12 bg-slate-700" />
+                      <div className="w-px h-10 sm:h-12 bg-slate-700" />
                       <div className="text-center flex-1">
-                        <p className="text-3xl font-bold text-slate-300">{area.slots}</p>
-                        <p className="text-sm text-slate-400 mt-1">Total</p>
+                        <p className="text-2xl sm:text-3xl font-bold text-slate-300">{area.slots}</p>
+                        <p className="text-xs sm:text-sm text-slate-400 mt-1">Total</p>
                       </div>
                     </div>
 
@@ -359,21 +359,21 @@ export default function PublicParkingView() {
                     </div>
 
                     {/* Parking Slot Map */}
-                    <div className="bg-slate-800/30 rounded-lg p-3 border border-slate-700/50">
-                      <div className="flex items-center justify-between mb-3">
+                    <div className="bg-slate-800/30 rounded-lg p-2 sm:p-3 border border-slate-700/50">
+                      <div className="flex items-center justify-between mb-2 sm:mb-3">
                         <span className="text-xs font-semibold text-slate-300">Parking Map</span>
-                        <div className="flex items-center gap-3 text-xs">
+                        <div className="flex items-center gap-2 sm:gap-3 text-xs">
                           <div className="flex items-center gap-1">
                             <div className="w-2 h-2 rounded-sm bg-green-500"></div>
-                            <span className="text-slate-400">Free</span>
+                            <span className="text-slate-400 text-[10px] sm:text-xs">Free</span>
                           </div>
                           <div className="flex items-center gap-1">
                             <div className="w-2 h-2 rounded-sm bg-red-500"></div>
-                            <span className="text-slate-400">Occupied</span>
+                            <span className="text-slate-400 text-[10px] sm:text-xs">Occupied</span>
                           </div>
                         </div>
                       </div>
-                      <div className="grid grid-cols-6 gap-2">
+                      <div className="grid grid-cols-6 gap-1.5 sm:gap-2">
                         {Array.from({ length: 12 }).map((_, i) => {
                           const slotNumber = i + 1
                           const isOccupied = i < Math.round((area.occupied / area.slots) * 12)
@@ -424,10 +424,10 @@ export default function PublicParkingView() {
         </div>
 
         {/* Footer */}
-        <footer className="relative z-10 border-t border-slate-700/50 bg-slate-900/50 backdrop-blur-xl mt-12">
-          <div className="container mx-auto px-4 py-6">
-            <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-              <p className="text-slate-400 text-sm">
+        <footer className="relative z-10 border-t border-slate-700/50 bg-slate-900/50 backdrop-blur-xl mt-8 sm:mt-12">
+          <div className="container mx-auto px-4 py-4 sm:py-6">
+            <div className="flex flex-col md:flex-row items-center justify-between gap-3 sm:gap-4">
+              <p className="text-slate-400 text-xs sm:text-sm text-center md:text-left">
                 © 2025 Smart Parking System. Real-time updates every 30 seconds.
               </p>
               <div className="flex items-center gap-2 text-sm text-slate-400">

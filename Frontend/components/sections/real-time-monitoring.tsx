@@ -24,11 +24,11 @@ export function RealTimeMonitoring() {
   }
 
   return (
-    <div className="space-y-5">
-      <div className="flex items-end justify-between border-b-2 border-slate-700/50 pb-4">
+    <div className="space-y-4 sm:space-y-5">
+      <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3 border-b-2 border-slate-700/50 pb-4">
         <div>
-          <h2 className="text-2xl font-bold text-white tracking-tight">Live Parking Status</h2>
-          <p className="text-sm text-slate-400 mt-1">Real-time availability across all zones</p>
+          <h2 className="text-xl sm:text-2xl font-bold text-white tracking-tight">Live Parking Status</h2>
+          <p className="text-xs sm:text-sm text-slate-400 mt-1">Real-time availability across all zones</p>
         </div>
         <div className="flex items-center gap-2 text-xs text-slate-400">
           <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
@@ -36,7 +36,7 @@ export function RealTimeMonitoring() {
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-5">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5">
         {parkingAreas.map((area) => {
           const occupancyRate = Math.round((area.occupied / area.slots) * 100)
           const available = area.slots - area.occupied
@@ -45,20 +45,20 @@ export function RealTimeMonitoring() {
           return (
             <div
               key={area.id}
-              className="relative bg-slate-900/80 backdrop-blur-xl rounded-2xl border border-slate-700/50 overflow-hidden hover:shadow-2xl hover:shadow-purple-500/20 transition-all duration-300 group transform hover:scale-105"
+              className="relative bg-slate-900/80 backdrop-blur-xl rounded-xl sm:rounded-2xl border border-slate-700/50 overflow-hidden hover:shadow-2xl hover:shadow-purple-500/20 transition-all duration-300 group transform hover:scale-105"
             >
               {/* Top Color Bar */}
-              <div className={`h-1.5 ${getProgressColor(area.status)}`}></div>
+              <div className={`h-1 sm:h-1.5 ${getProgressColor(area.status)}`}></div>
 
-              <div className="p-6">
+              <div className="p-4 sm:p-6">
                 {/* Header Section */}
-                <div className="flex items-start justify-between mb-5">
-                  <div className="flex items-start gap-3">
-                    <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-purple-500 to-blue-600 flex items-center justify-center text-white font-bold text-lg shadow-lg shadow-purple-500/30">
+                <div className="flex items-start justify-between mb-4 sm:mb-5">
+                  <div className="flex items-start gap-2 sm:gap-3">
+                    <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-gradient-to-br from-purple-500 to-blue-600 flex items-center justify-center text-white font-bold text-base sm:text-lg shadow-lg shadow-purple-500/30">
                       {area.id}
                     </div>
                     <div>
-                      <h3 className="font-bold text-white text-base mb-0.5">{area.location}</h3>
+                      <h3 className="font-bold text-white text-sm sm:text-base mb-0.5">{area.location}</h3>
                       <div className="flex items-center gap-1 text-xs text-slate-400">
                         <MapPin className="w-3 h-3" />
                         <span>Zone {area.id}</span>
@@ -71,9 +71,9 @@ export function RealTimeMonitoring() {
                 </div>
 
                 {/* Stats Row */}
-                <div className="grid grid-cols-3 gap-3 mb-5">
+                <div className="grid grid-cols-3 gap-2 sm:gap-3 mb-4 sm:mb-5">
                   <div className="text-center">
-                    <div className="text-2xl font-bold text-white">{area.slots}</div>
+                    <div className="text-xl sm:text-2xl font-bold text-white">{area.slots}</div>
                     <div className="text-xs text-slate-400 font-medium">Total</div>
                   </div>
                   <div className="text-center border-x border-slate-700">

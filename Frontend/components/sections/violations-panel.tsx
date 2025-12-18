@@ -142,43 +142,43 @@ export function ViolationsPanel() {
   const areasWithViolations = parkingAreas.filter((area) => area.violations.length > 0).length
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-foreground mb-2">Violations & Alerts by Area</h1>
-          <p className="text-muted-foreground">Real-time monitoring of parking violations across all areas</p>
+          <h1 className="text-xl sm:text-2xl font-bold text-foreground mb-2">Violations & Alerts by Area</h1>
+          <p className="text-sm text-muted-foreground">Real-time monitoring of parking violations across all areas</p>
         </div>
       </div>
 
       {/* Summary Cards */}
-      <div className="grid grid-cols-4 gap-4">
-        <Card className="bg-gradient-to-br from-red-50 to-white border-border p-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+        <Card className="bg-gradient-to-br from-red-50 to-white border-border p-3 sm:p-4">
           <div className="flex items-center gap-2 mb-2">
-            <AlertTriangle className="w-4 h-4 text-red-600" />
+            <AlertTriangle className="w-3 h-3 sm:w-4 sm:h-4 text-red-600" />
             <p className="text-xs text-muted-foreground">Total Violations</p>
           </div>
-          <p className="text-3xl font-bold text-red-600">{totalViolations}</p>
+          <p className="text-2xl sm:text-3xl font-bold text-red-600">{totalViolations}</p>
         </Card>
-        <Card className="bg-gradient-to-br from-orange-50 to-white border-border p-4">
+        <Card className="bg-gradient-to-br from-orange-50 to-white border-border p-3 sm:p-4">
           <div className="flex items-center gap-2 mb-2">
-            <XCircle className="w-4 h-4 text-orange-600" />
+            <XCircle className="w-3 h-3 sm:w-4 sm:h-4 text-orange-600" />
             <p className="text-xs text-muted-foreground">High Severity</p>
           </div>
-          <p className="text-3xl font-bold text-orange-600">{highSeverity}</p>
+          <p className="text-2xl sm:text-3xl font-bold text-orange-600">{highSeverity}</p>
         </Card>
-        <Card className="bg-gradient-to-br from-yellow-50 to-white border-border p-4">
+        <Card className="bg-gradient-to-br from-yellow-50 to-white border-border p-3 sm:p-4">
           <div className="flex items-center gap-2 mb-2">
-            <AlertTriangle className="w-4 h-4 text-yellow-600" />
+            <AlertTriangle className="w-3 h-3 sm:w-4 sm:h-4 text-yellow-600" />
             <p className="text-xs text-muted-foreground">Medium Severity</p>
           </div>
-          <p className="text-3xl font-bold text-yellow-600">{mediumSeverity}</p>
+          <p className="text-2xl sm:text-3xl font-bold text-yellow-600">{mediumSeverity}</p>
         </Card>
-        <Card className="bg-gradient-to-br from-blue-50 to-white border-border p-4">
+        <Card className="bg-gradient-to-br from-blue-50 to-white border-border p-3 sm:p-4">
           <div className="flex items-center gap-2 mb-2">
-            <MapPin className="w-4 h-4 text-blue-600" />
+            <MapPin className="w-3 h-3 sm:w-4 sm:h-4 text-blue-600" />
             <p className="text-xs text-muted-foreground">Areas Affected</p>
           </div>
-          <p className="text-3xl font-bold text-blue-600">{areasWithViolations}</p>
+          <p className="text-2xl sm:text-3xl font-bold text-blue-600">{areasWithViolations}</p>
         </Card>
       </div>
 
@@ -194,16 +194,16 @@ export function ViolationsPanel() {
             }`}
           >
             <div
-              className={`p-5 border-b border-border ${
+              className={`p-4 sm:p-5 border-b border-border ${
                 area.violations.length > 0
                   ? "bg-gradient-to-r from-red-50 to-transparent"
                   : "bg-gradient-to-r from-gray-100 to-transparent"
               }`}
             >
-              <div className="flex items-start justify-between">
+              <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
                 <div className="flex-1">
-                  <div className="flex items-center gap-3 mb-2">
-                    <h3 className="text-lg font-bold text-foreground">{area.name}</h3>
+                  <div className="flex flex-wrap items-center gap-2 sm:gap-3 mb-2">
+                    <h3 className="text-base sm:text-lg font-bold text-foreground">{area.name}</h3>
                     <Badge variant="outline" className="text-xs">
                       Area {area.id}
                     </Badge>
@@ -229,22 +229,22 @@ export function ViolationsPanel() {
                 {area.violations.map((violation) => (
                   <div
                     key={violation.slot}
-                    className="p-5 hover:bg-red-50/50 transition-colors"
+                    className="p-4 sm:p-5 hover:bg-red-50/50 transition-colors"
                   >
-                    <div className="flex items-start justify-between mb-3">
-                      <div className="flex items-start gap-3">
+                    <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-3 gap-3">
+                      <div className="flex items-start gap-3 flex-1">
                         <div className="p-2 bg-red-100 rounded-lg text-red-600 mt-1">
                           {getViolationIcon(violation.type)}
                         </div>
                         <div className="flex-1">
-                          <div className="flex items-center gap-2 mb-2">
+                          <div className="flex flex-wrap items-center gap-2 mb-2">
                             <h4 className="font-bold text-foreground">{violation.type}</h4>
                             <Badge className={`border font-medium ${getSeverityColor(violation.severity)}`}>
                               {violation.severity}
                             </Badge>
                           </div>
                           <p className="text-sm text-muted-foreground mb-2">{violation.description}</p>
-                          <div className="flex items-center gap-6 text-sm">
+                          <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-6 text-sm">
                             <div className="flex items-center gap-1.5">
                               <span className="text-muted-foreground">Slot:</span>
                               <span className="font-mono font-semibold text-foreground">{violation.slot}</span>

@@ -1,6 +1,6 @@
 "use client"
 
-import { Clock, Bell, LogOut } from "lucide-react"
+import { Clock, Bell, LogOut, Menu } from "lucide-react"
 import { useState, useEffect } from "react"
 import { useAuth } from "@/contexts/auth-context"
 import { useRouter } from "next/navigation"
@@ -15,7 +15,11 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 
-export function Header() {
+interface HeaderProps {
+  onMenuClick?: () => void
+}
+
+export function Header({ onMenuClick }: HeaderProps) {
   const [time, setTime] = useState<string>("")
   const { user, logout } = useAuth()
   const router = useRouter()
@@ -35,17 +39,25 @@ export function Header() {
 
   return (
     <header className="border-b border-slate-700/50 bg-slate-900/50 backdrop-blur-xl">
-      <div className="px-8 py-4 flex items-center justify-between">
+      <div className="px-4 sm:px-6 md:px-8 py-4 flex items-center justify-between">
+        {onMenuClick && (
+          <button
+            onClick={onMenuClick}
+            className="md:hidden p-2 hover:bg-slate-800/50 rounded-lg transition-colors text-slate-400 hover:text-white mr-2"
+          >
+            <Menu className="w-5 h-5" />
+          </button>
+        )}
         <div>
-          <h1 className="text-2xl font-bold text-white">Smart Parking Dashboard</h1>
-          <p className="text-sm text-slate-400 mt-1">Real-time AI-powered parking system</p>
+          <h1 className="text-lg sm:text-xl md:text-2xl font-bold text-white">Smart Parking Dashboard</h1>
+          <p className="text-xs sm:text-sm text-slate-400 mt-1 hidden sm:block">Real-time AI-powered parking system</p>
         </div>
-        <div className="flex items-center gap-6">
-          <div className="flex items-center gap-2 px-4 py-2 bg-slate-800/50 rounded-lg border border-slate-700">
+        <div className="flex items-center gap-2 sm:gap-4 md:gap-2 sm:gap-4 md:gap-6">
+          <div className="hidden sm:flex items-center gap-2 px-3 md:px-4 py-2 bg-slate-800/50 rounded-lg border border-slate-700">
             <Clock className="w-4 h-4 text-purple-400" />
-            <span className="text-sm font-mono text-white">{time}</span>
+            <span className="text-xs md:text-sm font-mono text-white">{time}</span>
           </div>
-          <button className="p-2 hover:bg-slate-800/50 rounded-lg transition-colors text-slate-400 hover:text-white relative">
+          <button className="p-2 hover:bg-slate-800/50 rounded-lg transition-colors text-slate-400 hover:text-white relative hidden sm:block">
             <Bell className="w-5 h-5" />
             <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full" />
           </button>

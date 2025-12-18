@@ -38,13 +38,20 @@ export function Dashboard() {
     }
   }, [searchParams])
 
+  const [sidebarOpen, setSidebarOpen] = useState(false)
+
   return (
     <div className="flex h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
-      <Sidebar activeSection={activeSection} setActiveSection={handleSectionChange} />
+      <Sidebar 
+        activeSection={activeSection} 
+        setActiveSection={handleSectionChange}
+        sidebarOpen={sidebarOpen}
+        setSidebarOpen={setSidebarOpen}
+      />
       <div className="flex-1 flex flex-col overflow-hidden">
-        <Header />
+        <Header onMenuClick={() => setSidebarOpen(!sidebarOpen)} />
         <main className="flex-1 overflow-auto">
-          <div className="p-8 max-w-7xl mx-auto">
+          <div className="p-4 sm:p-6 md:p-8 max-w-7xl mx-auto">
             {activeSection === "monitoring" && (
               <div className="space-y-6">
                 <RealTimeMonitoring />

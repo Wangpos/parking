@@ -74,12 +74,12 @@ export default function LoginPage() {
       {/* Back Button */}
       <button
         onClick={() => router.push("/")}
-        className="absolute top-6 left-6 z-20 flex items-center gap-2 text-gray-300 hover:text-white transition-all duration-300 group"
+        className="absolute top-4 left-4 sm:top-6 sm:left-6 z-20 flex items-center gap-2 text-gray-300 hover:text-white transition-all duration-300 group"
       >
-        <div className="w-10 h-10 rounded-lg bg-purple-500/10 border border-purple-500/30 flex items-center justify-center group-hover:bg-purple-500/20 group-hover:border-purple-500/50 transition-all duration-300">
-          <ArrowLeft className="w-5 h-5" />
+        <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-purple-500/10 border border-purple-500/30 flex items-center justify-center group-hover:bg-purple-500/20 group-hover:border-purple-500/50 transition-all duration-300">
+          <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5" />
         </div>
-        <span className="text-sm font-medium">Back to Home</span>
+        <span className="text-xs sm:text-sm font-medium hidden sm:inline">Back to Home</span>
       </button>
 
       {/* Add keyframe animation styles */}
@@ -105,47 +105,47 @@ export default function LoginPage() {
       `}</style>
 
       {/* Content Container */}
-      <div className="relative z-10 min-h-screen flex flex-col items-center justify-center px-4">
+      <div className="relative z-10 min-h-screen flex flex-col items-center justify-center px-4 py-12 sm:px-6 lg:px-8">
         {/* Logo Section */}
         <div 
-          className={`text-center mb-8 transition-all duration-700 ${
+          className={`text-center mb-6 sm:mb-8 transition-all duration-700 ${
             isMounted ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-10'
           }`}
         >
-          <div className="inline-flex items-center justify-center gap-3 mb-6">
-            <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-purple-700 rounded-2xl flex items-center justify-center shadow-2xl shadow-purple-500/30 animate-float">
-              <ParkingCircle className="w-10 h-10 text-white" />
+          <div className="inline-flex items-center justify-center gap-3 mb-4 sm:mb-6">
+            <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br from-purple-500 to-purple-700 rounded-2xl flex items-center justify-center shadow-2xl shadow-purple-500/30 animate-float">
+              <ParkingCircle className="w-8 h-8 sm:w-10 sm:h-10 text-white" />
             </div>
           </div>
-          <h1 className="text-5xl font-bold text-white mb-4 tracking-tight">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-2 sm:mb-4 tracking-tight">
             ParkHub
           </h1>
-          <p className="text-lg text-gray-400">Real-time AI-powered parking system</p>
+          <p className="text-sm sm:text-base md:text-lg text-gray-400">Real-time AI-powered parking system</p>
         </div>
 
         {/* Login Card */}
         <div 
-          className={`w-full max-w-[480px] bg-[#252139] border border-purple-500/20 rounded-2xl shadow-2xl shadow-purple-500/10 p-8 transition-all duration-700 ${
+          className={`w-full max-w-[480px] bg-[#252139] border border-purple-500/20 rounded-xl sm:rounded-2xl shadow-2xl shadow-purple-500/10 p-6 sm:p-8 transition-all duration-700 ${
             isMounted ? 'opacity-100 scale-100' : 'opacity-0 scale-90'
           }`}
           style={{ transitionDelay: '200ms' }}
         >
-          <div className="mb-8 text-center">
-            <h2 className="text-3xl font-bold text-white mb-2">Welcome Back</h2>
-            <p className="text-gray-400 text-sm">Sign in to access your dashboard</p>
+          <div className="mb-6 sm:mb-8 text-center">
+            <h2 className="text-2xl sm:text-3xl font-bold text-white mb-2">Welcome Back</h2>
+            <p className="text-gray-400 text-xs sm:text-sm">Sign in to access your dashboard</p>
           </div>
 
           {error && (
             <Alert 
               variant="destructive" 
-              className="mb-6 bg-red-500/10 border-red-500/30 animate-in slide-in-from-top-2 duration-300"
+              className="mb-4 sm:mb-6 bg-red-500/10 border-red-500/30 animate-in slide-in-from-top-2 duration-300"
             >
               <AlertCircle className="h-4 w-4 text-red-400 animate-pulse" />
               <AlertDescription className="text-red-400">{error}</AlertDescription>
             </Alert>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-5">
+          <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5">
             <div 
               className={`space-y-2 transition-all duration-500 ${
                 isMounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'
@@ -156,14 +156,14 @@ export default function LoginPage() {
                 Email/Username*
               </Label>
               <div className="relative">
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-500" />
+                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 sm:h-5 sm:w-5 text-gray-500" />
                 <Input
                   id="email"
                   type="email"
                   placeholder="admin@parking.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="pl-11 h-12 bg-[#1a1625] border-purple-500/30 text-white placeholder:text-gray-500 focus:border-purple-500 focus:ring-purple-500/30 rounded-lg transition-all duration-300 hover:border-purple-500/50"
+                  className="pl-10 sm:pl-11 h-11 sm:h-12 bg-[#1a1625] border-purple-500/30 text-white placeholder:text-gray-500 focus:border-purple-500 focus:ring-purple-500/30 rounded-lg transition-all duration-300 hover:border-purple-500/50 text-sm sm:text-base"
                   required
                 />
               </div>
@@ -179,21 +179,21 @@ export default function LoginPage() {
                 Password*
               </Label>
               <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-500" />
+                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 sm:h-5 sm:w-5 text-gray-500" />
                 <Input
                   id="password"
                   type="password"
                   placeholder="••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="pl-11 h-12 bg-[#1a1625] border-purple-500/30 text-white placeholder:text-gray-500 focus:border-purple-500 focus:ring-purple-500/30 rounded-lg transition-all duration-300 hover:border-purple-500/50"
+                  className="pl-10 sm:pl-11 h-11 sm:h-12 bg-[#1a1625] border-purple-500/30 text-white placeholder:text-gray-500 focus:border-purple-500 focus:ring-purple-500/30 rounded-lg transition-all duration-300 hover:border-purple-500/50 text-sm sm:text-base"
                   required
                 />
               </div>
             </div>
 
             <div 
-              className={`flex items-center justify-between transition-all duration-500 ${
+              className={`flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-0 transition-all duration-500 ${
                 isMounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'
               }`}
               style={{ transitionDelay: '600ms' }}
@@ -222,7 +222,7 @@ export default function LoginPage() {
 
             <Button
               type="submit"
-              className={`w-full bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white font-semibold h-12 rounded-lg shadow-lg shadow-purple-500/30 hover:shadow-xl hover:shadow-purple-500/40 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] ${
+              className={`w-full bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white font-semibold h-11 sm:h-12 rounded-lg shadow-lg shadow-purple-500/30 hover:shadow-xl hover:shadow-purple-500/40 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] text-sm sm:text-base ${
                 isMounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'
               }`}
               style={{ transitionDelay: '700ms' }}
@@ -244,13 +244,13 @@ export default function LoginPage() {
 
           {/* Demo credentials */}
           <div 
-            className={`mt-6 p-4 bg-purple-500/10 rounded-xl border border-purple-500/20 transition-all duration-500 ${
+            className={`mt-5 sm:mt-6 p-3 sm:p-4 bg-purple-500/10 rounded-xl border border-purple-500/20 transition-all duration-500 ${
               isMounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'
             }`}
             style={{ transitionDelay: '800ms' }}
           >
             <p className="text-xs text-gray-400 mb-2 font-medium">🔑 Demo Credentials:</p>
-            <p className="text-xs text-gray-300">Email: <span className="font-mono font-semibold text-purple-400">admin@parking.com</span></p>
+            <p className="text-xs text-gray-300">Email: <span className="font-mono font-semibold text-purple-400 break-all">admin@parking.com</span></p>
             <p className="text-xs text-gray-300">Password: <span className="font-mono font-semibold text-purple-400">admin123</span></p>
           </div>
         </div>

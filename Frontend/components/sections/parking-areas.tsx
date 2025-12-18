@@ -101,20 +101,20 @@ export function ParkingAreas() {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-end justify-between border-b-2 border-gray-200 pb-4">
+    <div className="space-y-4 sm:space-y-6">
+      <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 border-b-2 border-gray-200 pb-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 tracking-tight">Parking Areas Overview</h1>
-          <p className="text-sm text-gray-500 mt-1">Detailed availability and location information</p>
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-900 tracking-tight">Parking Areas Overview</h1>
+          <p className="text-xs sm:text-sm text-gray-500 mt-1">Detailed availability and location information</p>
         </div>
-        <button className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors flex items-center gap-2">
+        <button className="px-3 sm:px-4 py-2 bg-blue-600 text-white rounded-lg text-xs sm:text-sm font-medium hover:bg-blue-700 transition-colors flex items-center gap-2 w-full sm:w-auto justify-center">
           <Navigation className="w-4 h-4" />
           Open Map View
         </button>
       </div>
 
       {/* Summary Stats */}
-      <div className="grid grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl p-5 text-white">
           <div className="text-sm font-medium opacity-90 mb-1">Total Areas</div>
           <div className="text-4xl font-bold">{areas.length}</div>
@@ -136,7 +136,7 @@ export function ParkingAreas() {
       </div>
 
       {/* Areas Grid */}
-      <div className="grid grid-cols-2 gap-5">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-5">
         {areas.map((area) => {
           const occupancyRate = Math.round((area.occupied / area.slots) * 100)
           const available = area.slots - area.occupied
@@ -147,12 +147,12 @@ export function ParkingAreas() {
               className="bg-white rounded-2xl border-2 border-gray-200 overflow-hidden hover:shadow-2xl hover:border-blue-400 transition-all duration-300"
             >
               {/* Header with gradient */}
-              <div className="bg-gradient-to-r from-gray-50 to-gray-100 p-5 border-b-2 border-gray-200">
-                <div className="flex items-start justify-between mb-3">
-                  <div className="flex items-center gap-3">
-                    <div className="text-4xl">{getCategoryIcon(area.category)}</div>
+              <div className="bg-gradient-to-r from-gray-50 to-gray-100 p-4 sm:p-5 border-b-2 border-gray-200">
+                <div className="flex items-start justify-between mb-2 sm:mb-3">
+                  <div className="flex items-center gap-2 sm:gap-3">
+                    <div className="text-2xl sm:text-4xl">{getCategoryIcon(area.category)}</div>
                     <div>
-                      <h3 className="text-lg font-bold text-gray-900">{area.name}</h3>
+                      <h3 className="text-base sm:text-lg font-bold text-gray-900">{area.name}</h3>
                       <div className="flex items-center gap-1.5 text-xs text-gray-500 mt-0.5">
                         <Building2 className="w-3 h-3" />
                         <span>{area.floor}</span>
@@ -172,8 +172,8 @@ export function ParkingAreas() {
               </div>
 
               {/* Stats Section */}
-              <div className="p-5">
-                <div className="grid grid-cols-3 gap-3 mb-5">
+              <div className="p-4 sm:p-5">
+                <div className="grid grid-cols-3 gap-2 sm:gap-3 mb-4 sm:mb-5">
                   <div className="text-center p-3 bg-gray-50 rounded-lg">
                     <div className="text-2xl font-bold text-gray-900">{area.slots}</div>
                     <div className="text-xs text-gray-500 font-medium mt-1">Total</div>
@@ -189,8 +189,8 @@ export function ParkingAreas() {
                 </div>
 
                 {/* Progress bar */}
-                <div className="mb-5">
-                  <div className="h-4 bg-gray-200 rounded-full overflow-hidden relative">
+                <div className="mb-4 sm:mb-5">
+                  <div className="h-3 sm:h-4 bg-gray-200 rounded-full overflow-hidden relative">
                     <div
                       className={`h-full ${getOccupancyColor(area.occupied, area.slots)} transition-all duration-1000 relative`}
                       style={{ width: `${occupancyRate}%` }}
@@ -201,8 +201,8 @@ export function ParkingAreas() {
                 </div>
 
                 {/* Car Grid */}
-                <div className="bg-gray-50 rounded-lg p-3 border-2 border-gray-200">
-                  <div className="grid grid-cols-12 gap-1.5">
+                <div className="bg-gray-50 rounded-lg p-2 sm:p-3 border-2 border-gray-200">
+                  <div className="grid grid-cols-8 sm:grid-cols-12 gap-1 sm:gap-1.5">
                     {Array.from({ length: 24 }).map((_, i) => {
                       const isOccupied = i < Math.round((area.occupied / area.slots) * 24)
                       const slotNumber = i + 1
@@ -223,19 +223,18 @@ export function ParkingAreas() {
               </div>
 
               {/* Footer */}
-              <div className="px-5 py-3 bg-gray-50 border-t-2 border-gray-200 flex items-center justify-between">
-                <div className="flex items-center gap-3 text-xs text-gray-600">
+              <div className="px-4 sm:px-5 py-3 bg-gray-50 border-t-2 border-gray-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
+                <div className="flex items-center gap-2 sm:gap-3 text-xs text-gray-600 flex-wrap">
                   {area.violations > 0 && (
                     <span className="px-2 py-1 bg-red-100 text-red-700 rounded font-medium border border-red-300">
                       {area.violations} Issue{area.violations > 1 ? 's' : ''}
                     </span>
                   )}
-                  <span className="font-mono text-gray-700">{area.coordinates}</span>
+                  <span className="font-mono text-gray-700 text-[10px] sm:text-xs">{area.coordinates}</span>
                 </div>
                 <button
                   onClick={() => router.push(`/parking/${area.id}`)}
-                  className="px-4 py-1.5 bg-blue-600 text-white rounded-lg text-xs font-medium hover:bg-blue-700 transition-colors flex items-center gap-1.5"
-                >
+                  className="px-3 sm:px-4 py-1.5 bg-blue-600 text-white rounded-lg text-xs font-medium hover:bg-blue-700 transition-colors flex items-center gap-1.5 w-full sm:w-auto justify-center">
                   View Details
                   <ArrowRight className="w-3.5 h-3.5" />
                 </button>
