@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { ParkingMap } from "@/components/parking-map"
+import { ParkingDurationTimer } from "@/components/parking-duration-timer"
 
 interface ParkingSlot {
   slotId: string
@@ -326,7 +327,13 @@ export default function ParkingAreaDetailPage() {
                               <Clock className="w-3 h-3" />
                               <span>Entry: {slot.entryTime}</span>
                               <span className="text-slate-500">•</span>
-                              <span>Duration: {slot.duration}</span>
+                              <span>Duration: </span>
+                              {slot.entryTime && (
+                                <ParkingDurationTimer 
+                                  entryTime={slot.entryTime}
+                                  className="font-medium text-purple-400"
+                                />
+                              )}
                             </div>
                           </div>
                         ) : (

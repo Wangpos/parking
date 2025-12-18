@@ -1,7 +1,8 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
+import { useAuth } from "@/contexts/auth-context"
 import { MapPin, Navigation2, ArrowRight, Car, Clock, CheckCircle2, Shield, Map } from "lucide-react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -22,9 +23,17 @@ interface ParkingArea {
 
 export default function PublicParkingView() {
   const router = useRouter()
+  const { isAuthenticated, isLoading } = useAuth()
   const [searchTerm, setSearchTerm] = useState("")
   const [selectedCategory, setSelectedCategory] = useState<string>("all")
   const [showMap, setShowMap] = useState(false)
+
+  // Redirect authenticated users to admin dashboard
+  useEffect(() => {
+    if (!isLoading && isAuthenticated) {
+      router.push("/admin")
+    }
+  }, [isAuthenticated, isLoading, router])
 
   const areas: ParkingArea[] = [
     {

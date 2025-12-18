@@ -232,6 +232,13 @@ export function ParkingAreas() {
                   )}
                   <span className="font-mono text-gray-700">{area.coordinates}</span>
                 </div>
+                <button
+                  onClick={() => router.push(`/parking/${area.id}`)}
+                  className="px-4 py-1.5 bg-blue-600 text-white rounded-lg text-xs font-medium hover:bg-blue-700 transition-colors flex items-center gap-1.5"
+                >
+                  View Details
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </button>
               </div>
             </div>
           )

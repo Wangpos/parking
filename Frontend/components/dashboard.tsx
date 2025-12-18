@@ -1,6 +1,7 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import { useRouter, useSearchParams } from "next/navigation"
 import { Header } from "./header"
 import { Sidebar } from "./sidebar"
 import { RealTimeMonitoring } from "./sections/real-time-monitoring"
@@ -12,11 +13,34 @@ import { ParkingMap } from "./sections/parking-map"
 import { ParkingAreas } from "./sections/parking-areas"
 
 export function Dashboard() {
+  const router = useRouter()
+  const searchParams = useSearchParams()
   const [activeSection, setActiveSection] = useState("monitoring")
+
+  // Initialize from URL on mount
+  useEffect(() => {
+    const section = searchParams.get("section")
+    if (section) {
+      setActiveSection(section)
+    }
+  }, [])
+
+  // Update URL when section changes
+  const handleSectionChange = (section: string) => {
+    setActiveSection(section)
+    router.push(`/admin?section=${section}`, { scroll: false })
+  }
+
+  useEffect(() => {
+    const section = searchParams.get("section") || "monitoring"
+    if (section !== activeSection) {
+      setActiveSection(section)
+    }
+  }, [searchParams])
 
   return (
     <div className="flex h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
-      <Sidebar activeSection={activeSection} setActiveSection={setActiveSection} />
+      <Sidebar activeSection={activeSection} setActiveSection={handleSectionChange} />
       <div className="flex-1 flex flex-col overflow-hidden">
         <Header />
         <main className="flex-1 overflow-auto">

@@ -6,23 +6,29 @@ import { useAuth } from "@/contexts/auth-context"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Lock, Mail, ParkingCircle, AlertCircle, KeyRound } from "lucide-react"
+import { Lock, Mail, ParkingCircle, AlertCircle, ArrowLeft } from "lucide-react"
 import { Alert, AlertDescription } from "@/components/ui/alert"
+import { Checkbox } from "@/components/ui/checkbox"
 
 export default function LoginPage() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
+  const [rememberMe, setRememberMe] = useState(false)
   const [error, setError] = useState("")
   const [isLoading, setIsLoading] = useState(false)
-  const { login, isAuthenticated } = useAuth()
+  const [isMounted, setIsMounted] = useState(false)
+  const { login, isAuthenticated, isLoading: authLoading } = useAuth()
   const router = useRouter()
 
   useEffect(() => {
-    if (isAuthenticated) {
+    setIsMounted(true)
+  }, [])
+
+  useEffect(() => {
+    if (isMounted && isAuthenticated) {
       router.push("/admin")
     }
-  }, [isAuthenticated, router])
+  }, [isAuthenticated, isMounted, router])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -39,102 +45,216 @@ export default function LoginPage() {
     }
   }
 
+  // Don't show login form if already authenticated or still loading auth
+  if (authLoading || (isMounted && isAuthenticated)) {
+    return null
+  }
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 p-4 relative overflow-hidden">
-      {/* Animated background elements */}
+    <div className="min-h-screen relative overflow-hidden bg-[#1a1625]">
+      {/* Animated background particles */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl animate-pulse" />
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl animate-pulse delay-1000" />
+        {isMounted && [...Array(50)].map((_, i) => (
+          <div
+            key={i}
+            className="absolute w-1 h-1 bg-purple-400/30 rounded-full animate-twinkle"
+            style={{
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+              animationDelay: `${Math.random() * 3}s`,
+              animationDuration: `${2 + Math.random() * 3}s`,
+            }}
+          />
+        ))}
       </div>
 
-      <Card className="w-full max-w-md relative z-10 border-slate-700/50 bg-slate-900/80 backdrop-blur-xl shadow-2xl">
-        <CardHeader className="space-y-4 text-center pb-8">
-          <div className="mx-auto w-20 h-20 bg-gradient-to-br from-purple-500 to-blue-500 rounded-2xl flex items-center justify-center shadow-lg transform hover:scale-105 transition-transform">
-            <ParkingCircle className="w-12 h-12 text-white" />
-          </div>
-          <div>
-            <CardTitle className="text-3xl font-bold text-white">Admin Portal</CardTitle>
-            <CardDescription className="text-slate-400 mt-2">
-              Sign in to access the parking dashboard
-            </CardDescription>
-          </div>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-6">
-            {error && (
-              <Alert variant="destructive" className="bg-red-500/10 border-red-500/50">
-                <AlertCircle className="h-4 w-4" />
-                <AlertDescription>{error}</AlertDescription>
-              </Alert>
-            )}
+      {/* Gradient overlay for depth */}
+      <div className="absolute inset-0 bg-gradient-to-br from-purple-900/20 via-transparent to-indigo-900/20 pointer-events-none"></div>
 
-            <div className="space-y-2">
-              <Label htmlFor="email" className="text-slate-300">
-                Email Address
+      {/* Back Button */}
+      <button
+        onClick={() => router.push("/")}
+        className="absolute top-6 left-6 z-20 flex items-center gap-2 text-gray-300 hover:text-white transition-all duration-300 group"
+      >
+        <div className="w-10 h-10 rounded-lg bg-purple-500/10 border border-purple-500/30 flex items-center justify-center group-hover:bg-purple-500/20 group-hover:border-purple-500/50 transition-all duration-300">
+          <ArrowLeft className="w-5 h-5" />
+        </div>
+        <span className="text-sm font-medium">Back to Home</span>
+      </button>
+
+      {/* Add keyframe animation styles */}
+      <style jsx>{`
+        @keyframes twinkle {
+          0%, 100% { opacity: 0; transform: scale(0); }
+          50% { opacity: 1; transform: scale(1); }
+        }
+        @keyframes float {
+          0%, 100% { transform: translateY(0px); }
+          50% { transform: translateY(-20px); }
+        }
+        @keyframes slideInUp {
+          from {
+            opacity: 0;
+            transform: translateY(30px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+      `}</style>
+
+      {/* Content Container */}
+      <div className="relative z-10 min-h-screen flex flex-col items-center justify-center px-4">
+        {/* Logo Section */}
+        <div 
+          className={`text-center mb-8 transition-all duration-700 ${
+            isMounted ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-10'
+          }`}
+        >
+          <div className="inline-flex items-center justify-center gap-3 mb-6">
+            <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-purple-700 rounded-2xl flex items-center justify-center shadow-2xl shadow-purple-500/30 animate-float">
+              <ParkingCircle className="w-10 h-10 text-white" />
+            </div>
+          </div>
+          <h1 className="text-5xl font-bold text-white mb-4 tracking-tight">
+            ParkHub
+          </h1>
+          <p className="text-lg text-gray-400">Real-time AI-powered parking system</p>
+        </div>
+
+        {/* Login Card */}
+        <div 
+          className={`w-full max-w-[480px] bg-[#252139] border border-purple-500/20 rounded-2xl shadow-2xl shadow-purple-500/10 p-8 transition-all duration-700 ${
+            isMounted ? 'opacity-100 scale-100' : 'opacity-0 scale-90'
+          }`}
+          style={{ transitionDelay: '200ms' }}
+        >
+          <div className="mb-8 text-center">
+            <h2 className="text-3xl font-bold text-white mb-2">Welcome Back</h2>
+            <p className="text-gray-400 text-sm">Sign in to access your dashboard</p>
+          </div>
+
+          {error && (
+            <Alert 
+              variant="destructive" 
+              className="mb-6 bg-red-500/10 border-red-500/30 animate-in slide-in-from-top-2 duration-300"
+            >
+              <AlertCircle className="h-4 w-4 text-red-400 animate-pulse" />
+              <AlertDescription className="text-red-400">{error}</AlertDescription>
+            </Alert>
+          )}
+
+          <form onSubmit={handleSubmit} className="space-y-5">
+            <div 
+              className={`space-y-2 transition-all duration-500 ${
+                isMounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'
+              }`}
+              style={{ transitionDelay: '400ms' }}
+            >
+              <Label htmlFor="email" className="text-gray-300 text-sm font-medium">
+                Email/Username*
               </Label>
               <div className="relative">
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
+                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-500" />
                 <Input
                   id="email"
                   type="email"
                   placeholder="admin@parking.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="pl-11 bg-slate-800/50 border-slate-700 text-white placeholder:text-slate-500 focus:border-purple-500 focus:ring-purple-500/20"
+                  className="pl-11 h-12 bg-[#1a1625] border-purple-500/30 text-white placeholder:text-gray-500 focus:border-purple-500 focus:ring-purple-500/30 rounded-lg transition-all duration-300 hover:border-purple-500/50"
                   required
                 />
               </div>
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="password" className="text-slate-300">
-                Password
+            <div 
+              className={`space-y-2 transition-all duration-500 ${
+                isMounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'
+              }`}
+              style={{ transitionDelay: '500ms' }}
+            >
+              <Label htmlFor="password" className="text-gray-300 text-sm font-medium">
+                Password*
               </Label>
               <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
+                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-500" />
                 <Input
                   id="password"
                   type="password"
                   placeholder="••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="pl-11 bg-slate-800/50 border-slate-700 text-white placeholder:text-slate-500 focus:border-purple-500 focus:ring-purple-500/20"
+                  className="pl-11 h-12 bg-[#1a1625] border-purple-500/30 text-white placeholder:text-gray-500 focus:border-purple-500 focus:ring-purple-500/30 rounded-lg transition-all duration-300 hover:border-purple-500/50"
                   required
                 />
               </div>
             </div>
 
+            <div 
+              className={`flex items-center justify-between transition-all duration-500 ${
+                isMounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'
+              }`}
+              style={{ transitionDelay: '600ms' }}
+            >
+              <div className="flex items-center space-x-2">
+                <Checkbox 
+                  id="remember" 
+                  checked={rememberMe}
+                  onCheckedChange={(checked) => setRememberMe(checked as boolean)}
+                  className="border-purple-500/30 data-[state=checked]:bg-purple-600 data-[state=checked]:border-purple-600"
+                />
+                <label
+                  htmlFor="remember"
+                  className="text-sm text-gray-400 cursor-pointer select-none"
+                >
+                  Remember me
+                </label>
+              </div>
+              <button
+                type="button"
+                className="text-sm text-purple-400 hover:text-purple-300 font-medium transition-colors"
+              >
+                Forgot password?
+              </button>
+            </div>
+
             <Button
               type="submit"
-              className="w-full bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-white font-semibold py-6 rounded-lg shadow-lg hover:shadow-purple-500/50 transition-all"
+              className={`w-full bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white font-semibold h-12 rounded-lg shadow-lg shadow-purple-500/30 hover:shadow-xl hover:shadow-purple-500/40 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] ${
+                isMounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'
+              }`}
+              style={{ transitionDelay: '700ms' }}
               disabled={isLoading}
             >
-              {isLoading ? "Signing in..." : "Sign In"}
+              {isLoading ? (
+                <span className="flex items-center justify-center gap-2">
+                  <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                  </svg>
+                  Signing in...
+                </span>
+              ) : (
+                "Sign In"
+              )}
             </Button>
-
-            <div className="mt-6 p-4 bg-slate-800/50 rounded-lg border border-slate-700">
-              <div className="flex items-start gap-2 text-sm text-slate-400">
-                <KeyRound className="h-4 w-4 mt-0.5 text-purple-400 flex-shrink-0" />
-                <div>
-                  <p className="font-medium text-slate-300">Demo Credentials:</p>
-                  <p className="mt-1">Email: admin@parking.com</p>
-                  <p>Password: admin123</p>
-                </div>
-              </div>
-            </div>
           </form>
 
-          <div className="mt-6 text-center">
-            <Button
-              variant="ghost"
-              className="text-slate-400 hover:text-white"
-              onClick={() => router.push("/")}
-            >
-              Back to Public View
-            </Button>
+          {/* Demo credentials */}
+          <div 
+            className={`mt-6 p-4 bg-purple-500/10 rounded-xl border border-purple-500/20 transition-all duration-500 ${
+              isMounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'
+            }`}
+            style={{ transitionDelay: '800ms' }}
+          >
+            <p className="text-xs text-gray-400 mb-2 font-medium">🔑 Demo Credentials:</p>
+            <p className="text-xs text-gray-300">Email: <span className="font-mono font-semibold text-purple-400">admin@parking.com</span></p>
+            <p className="text-xs text-gray-300">Password: <span className="font-mono font-semibold text-purple-400">admin123</span></p>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </div>
   )
 }

@@ -40,10 +40,12 @@ export function DurationTracker() {
   const calculateDuration = (entryTimestamp: number) => {
     const now = currentTime
     const durationMs = now - entryTimestamp
-    const totalMinutes = Math.floor(durationMs / 60000)
+    const totalSeconds = Math.floor(durationMs / 1000)
+    const totalMinutes = Math.floor(totalSeconds / 60)
     const hours = Math.floor(totalMinutes / 60)
     const minutes = totalMinutes % 60
-    return { hours, minutes, totalMinutes }
+    const seconds = totalSeconds % 60
+    return { hours, minutes, seconds, totalMinutes }
   }
 
   const calculateFee = (totalMinutes: number) => {
@@ -259,7 +261,7 @@ export function DurationTracker() {
                 </thead>
                 <tbody className="divide-y divide-border">
                   {area.vehicles.map((vehicle) => {
-                    const { hours, minutes, totalMinutes } = calculateDuration(vehicle.entryTimestamp)
+                    const { hours, minutes, seconds, totalMinutes } = calculateDuration(vehicle.entryTimestamp)
                     const fee = calculateFee(totalMinutes)
                     const liveStatus = getStatus(totalMinutes)
                     
@@ -273,8 +275,9 @@ export function DurationTracker() {
                         </td>
                         <td className="px-6 py-4 text-muted-foreground">{vehicle.entry}</td>
                         <td className="px-6 py-4">
-                          <span className="text-foreground font-semibold tabular-nums">
-                            {hours}h {minutes.toString().padStart(2, '0')}m
+                          <span className="text-foreground font-semibold tabular-nums flex items-center gap-1">
+                            <Timer className="w-4 h-4 text-blue-500 animate-pulse" />
+                            {hours}h {minutes.toString().padStart(2, '0')}m {seconds.toString().padStart(2, '0')}s
                           </span>
                         </td>
                         <td className="px-6 py-4">

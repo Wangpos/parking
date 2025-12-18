@@ -22,12 +22,20 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined)
 export function AuthProvider({ children }: { readonly children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
   const [isLoading, setIsLoading] = useState(true)
+  const [isMounted, setIsMounted] = useState(false)
 
   useEffect(() => {
+    setIsMounted(true)
     // Check if user is already logged in (from localStorage)
-    const storedUser = localStorage.getItem("parkingAdminUser")
-    if (storedUser) {
-      setUser(JSON.parse(storedUser))
+    if (typeof window !== 'undefined') {
+      const storedUser = localStorage.getItem("parkingAdminUser")
+      if (storedUser) {
+        try {
+          setUser(JSON.parse(storedUser))
+        } catch (error) {
+          localStorage.removeItem("parkingAdminUser")
+        }
+      }
     }
     setIsLoading(false)
   }, [])
@@ -43,7 +51,9 @@ export function AuthProvider({ children }: { readonly children: React.ReactNode 
         name: "Admin User",
       }
       setUser(adminUser)
-      localStorage.setItem("parkingAdminUser", JSON.stringify(adminUser))
+      if (typeof window !== 'undefined') {
+        localStorage.setItem("parkingAdminUser", JSON.stringify(adminUser))
+      }
       return true
     }
     return false
@@ -51,7 +61,9 @@ export function AuthProvider({ children }: { readonly children: React.ReactNode 
 
   const logout = () => {
     setUser(null)
-    localStorage.removeItem("parkingAdminUser")
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem("parkingAdminUser")
+    }
   }
 
   const contextValue = useMemo(
