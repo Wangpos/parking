@@ -1,0 +1,10 @@
+# ByteTrack Configuration for Smart Parking System
+# Optimized for MAXIMUM ID stability - prevents ID changes
+
+tracker_type: bytetrack      # Use ByteTrack algorithm
+track_high_thresh: 0.2       # Lower = keep tracks even with lower confidence
+track_low_thresh: 0.1        # Second-stage threshold for recovery
+new_track_thresh: 0.6        # Higher = harder to create new tracks (reduces duplicate IDs)
+track_buffer: 120            # Keep lost tracks for 120 frames (~8 seconds at 15fps)
+match_thresh: 0.6            # Lower = more lenient matching (easier to re-identify)
+fuse_score: True             # Fuse detection score with IoU for stable matching
