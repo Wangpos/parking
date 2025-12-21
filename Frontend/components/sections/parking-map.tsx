@@ -90,11 +90,39 @@ export function ParkingMap() {
 
         mapInstanceRef.current = map
 
-        // Add OpenStreetMap tiles
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        // Define base layers
+        const streetMap = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
           attribution: '© OpenStreetMap contributors',
           maxZoom: 19,
-        }).addTo(map)
+        })
+
+        const satelliteMap = L.tileLayer(
+          'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+          {
+            attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community',
+            maxZoom: 19,
+          }
+        )
+
+        const hybridMap = L.tileLayer(
+          'https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}',
+          {
+            attribution: '&copy; Google Maps',
+            maxZoom: 20,
+          }
+        )
+
+        // Add default layer (street map)
+        streetMap.addTo(map)
+
+        // Create layer control
+        const baseMaps = {
+          'Street Map': streetMap,
+          'Satellite': satelliteMap,
+          'Hybrid': hybridMap,
+        }
+
+        L.control.layers(baseMaps).addTo(map)
 
         // Add custom markers for each parking zone
         zones.forEach((zone) => {

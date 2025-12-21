@@ -1,7 +1,7 @@
 "use client"
 
 import { useParams, useRouter } from "next/navigation"
-import { ArrowLeft, MapPin, Clock, Car, AlertCircle, Navigation } from "lucide-react"
+import { ArrowLeft, MapPin, Clock, Car, AlertCircle, Navigation, CreditCard, DollarSign } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -111,6 +111,31 @@ export default function ParkingAreaDetailPage() {
       }
     }
     return slots
+  }
+
+  // Calculate parking fee based on duration (Nu. 20/hour)
+  const calculateFee = (duration: string) => {
+    const hourMatch = duration.match(/(\d+)h/)
+    const minuteMatch = duration.match(/(\d+)m/)
+    const hours = hourMatch ? parseInt(hourMatch[1]) : 0
+    const minutes = minuteMatch ? parseInt(minuteMatch[1]) : 0
+    const totalMinutes = hours * 60 + minutes
+    const totalHours = totalMinutes / 60
+    return Math.ceil(totalHours * 20)
+  }
+
+  const handlePayment = (slot: ParkingSlot) => {
+    if (slot.status === "occupied" && slot.duration) {
+      const fee = calculateFee(slot.duration)
+      const params = new URLSearchParams({
+        slot: slot.slotId,
+        duration: slot.duration,
+        fee: fee.toString(),
+        vehicle: slot.vehicleNumber || "Unknown",
+        area: area.name,
+      })
+      router.push(`/payment?${params.toString()}`)
+    }
   }
 
   const area = parkingAreaData[areaId as keyof typeof parkingAreaData]
@@ -304,52 +329,72 @@ export default function ParkingAreaDetailPage() {
                       : "bg-red-500/10 border-red-500/30"
                   }`}
                 >
-                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-                    <div className="flex items-center gap-2 sm:gap-3">
-                      <div
-                        className={`w-10 h-10 sm:w-12 sm:h-12 rounded-lg flex items-center justify-center font-bold text-sm sm:text-base ${
-                          slot.status === "free" ? "bg-green-500" : "bg-red-500"
-                        } text-white`}
+                  <div className="flex flex-col gap-3">
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                      <div className="flex items-center gap-2 sm:gap-3">
+                        <div
+                          className={`w-10 h-10 sm:w-12 sm:h-12 rounded-lg flex items-center justify-center font-bold text-sm sm:text-base ${
+                            slot.status === "free" ? "bg-green-500" : "bg-red-500"
+                          } text-white`}
+                        >
+                          {slot.slotId.replace(areaId, '')}
+                        </div>
+                        <div className="flex-1">
+                          <div className="font-semibold text-white">Slot {slot.slotId}</div>
+                          {slot.status === "occupied" ? (
+                            <div className="text-sm text-slate-400 space-y-1 mt-1">
+                              <div className="flex items-center gap-2">
+                                <Car className="w-3 h-3" />
+                                <span>{slot.vehicleNumber}</span>
+                                <span className="text-slate-500">•</span>
+                                <span>{slot.vehicleType}</span>
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <Clock className="w-3 h-3" />
+                                <span>Entry: {slot.entryTime}</span>
+                                <span className="text-slate-500">•</span>
+                                <span>Duration: </span>
+                                {slot.entryTime && (
+                                  <ParkingDurationTimer 
+                                    entryTime={slot.entryTime}
+                                    className="font-medium text-purple-400"
+                                  />
+                                )}
+                              </div>
+                            </div>
+                          ) : (
+                            <div className="text-sm text-green-400 mt-1">Available for parking</div>
+                          )}
+                        </div>
+                      </div>
+                      <Badge
+                        className={`${
+                          slot.status === "free"
+                            ? "bg-green-500 hover:bg-green-600"
+                            : "bg-red-500 hover:bg-red-600"
+                        } whitespace-nowrap`}
                       >
-                        {slot.slotId.replace(areaId, '')}
-                      </div>
-                      <div>
-                        <div className="font-semibold text-white">Slot {slot.slotId}</div>
-                        {slot.status === "occupied" ? (
-                          <div className="text-sm text-slate-400 space-y-1 mt-1">
-                            <div className="flex items-center gap-2">
-                              <Car className="w-3 h-3" />
-                              <span>{slot.vehicleNumber}</span>
-                              <span className="text-slate-500">•</span>
-                              <span>{slot.vehicleType}</span>
-                            </div>
-                            <div className="flex items-center gap-2">
-                              <Clock className="w-3 h-3" />
-                              <span>Entry: {slot.entryTime}</span>
-                              <span className="text-slate-500">•</span>
-                              <span>Duration: </span>
-                              {slot.entryTime && (
-                                <ParkingDurationTimer 
-                                  entryTime={slot.entryTime}
-                                  className="font-medium text-purple-400"
-                                />
-                              )}
-                            </div>
-                          </div>
-                        ) : (
-                          <div className="text-sm text-green-400 mt-1">Available for parking</div>
-                        )}
-                      </div>
+                        {slot.status === "free" ? "FREE" : "OCCUPIED"}
+                      </Badge>
                     </div>
-                    <Badge
-                      className={`${
-                        slot.status === "free"
-                          ? "bg-green-500 hover:bg-green-600"
-                          : "bg-red-500 hover:bg-red-600"
-                      }`}
-                    >
-                      {slot.status === "free" ? "FREE" : "OCCUPIED"}
-                    </Badge>
+                    {slot.status === "occupied" && slot.duration && (
+                      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pt-3 border-t border-slate-600/50">
+                        <div className="flex items-center gap-2 text-sm">
+                          <DollarSign className="w-4 h-4 text-green-400" />
+                          <span className="text-slate-300">Parking Fee:</span>
+                          <span className="text-white font-bold text-base">Nu. {calculateFee(slot.duration)}</span>
+                          <span className="text-slate-500 text-xs">({slot.duration})</span>
+                        </div>
+                        <Button
+                          onClick={() => handlePayment(slot)}
+                          size="sm"
+                          className="bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-white gap-2"
+                        >
+                          <CreditCard className="w-4 h-4" />
+                          Pay Now
+                        </Button>
+                      </div>
+                    )}
                   </div>
                 </div>
               ))}

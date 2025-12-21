@@ -1,9 +1,11 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { useRouter } from "next/navigation"
 import { Card } from "@/components/ui/card"
-import { Clock, MapPin, Timer, AlertCircle, TrendingUp, DollarSign } from "lucide-react"
+import { Clock, MapPin, Timer, AlertCircle, TrendingUp, DollarSign, CreditCard } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
 
 interface Vehicle {
   slot: string
@@ -22,11 +24,10 @@ interface AreaData {
   name: string
   location: string
   vehicles: Vehicle[]
-  avgDuration: string
-  longestDuration: string
 }
 
 export function DurationTracker() {
+  const router = useRouter()
   const [currentTime, setCurrentTime] = useState(Date.now())
 
   useEffect(() => {
@@ -36,6 +37,22 @@ export function DurationTracker() {
 
     return () => clearInterval(timer)
   }, [])
+
+  const handlePayment = (vehicle: Vehicle, area: AreaData, totalMinutes: number, fee: number) => {
+    const hours = Math.floor(totalMinutes / 60)
+    const minutes = totalMinutes % 60
+    const duration = `${hours}h ${minutes}m`
+    
+    const params = new URLSearchParams({
+      slot: vehicle.slot,
+      duration: duration,
+      fee: fee.toString(),
+      vehicle: vehicle.license,
+      area: area.name,
+    })
+    
+    router.push(`/payment?${params.toString()}`)
+  }
 
   const calculateDuration = (entryTimestamp: number) => {
     const now = currentTime
@@ -70,8 +87,6 @@ export function DurationTracker() {
       id: "A1",
       name: "Main Entrance - North",
       location: "123 Main St, North Wing",
-      avgDuration: "3h 45m",
-      longestDuration: "6h 20m",
       vehicles: [
         { slot: "A1-001", entry: "08:30 AM", duration: "4h 22m", durationMinutes: 262, status: "Normal", license: "BP-2024-101", entryTimestamp: createTimestamp(4, 22) },
         { slot: "A1-005", entry: "09:15 AM", duration: "3h 37m", durationMinutes: 217, status: "Normal", license: "BP-2024-102", entryTimestamp: createTimestamp(3, 37) },
@@ -83,8 +98,6 @@ export function DurationTracker() {
       id: "A2",
       name: "Main Entrance - South",
       location: "123 Main St, South Wing",
-      avgDuration: "2h 30m",
-      longestDuration: "4h 15m",
       vehicles: [
         { slot: "A2-003", entry: "10:00 AM", duration: "2h 52m", durationMinutes: 172, status: "Normal", license: "BP-2024-105", entryTimestamp: createTimestamp(2, 52) },
         { slot: "A2-008", entry: "09:30 AM", duration: "3h 22m", durationMinutes: 202, status: "Normal", license: "BP-2024-106", entryTimestamp: createTimestamp(3, 22) },
@@ -95,8 +108,6 @@ export function DurationTracker() {
       id: "B1",
       name: "Building B - East Wing",
       location: "Building B, East Side",
-      avgDuration: "1h 45m",
-      longestDuration: "2h 40m",
       vehicles: [
         { slot: "B1-002", entry: "11:30 AM", duration: "1h 22m", durationMinutes: 82, status: "Normal", license: "BP-2024-108", entryTimestamp: createTimestamp(1, 22) },
         { slot: "B1-006", entry: "10:45 AM", duration: "2h 07m", durationMinutes: 127, status: "Normal", license: "BP-2024-109", entryTimestamp: createTimestamp(2, 7) },
@@ -106,8 +117,6 @@ export function DurationTracker() {
       id: "B2",
       name: "Building B - West Wing",
       location: "Building B, West Side",
-      avgDuration: "5h 15m",
-      longestDuration: "8h 30m",
       vehicles: [
         { slot: "B2-010", entry: "05:20 AM", duration: "7h 32m", durationMinutes: 452, status: "Alert", license: "BP-2024-110", entryTimestamp: createTimestamp(7, 32) },
         { slot: "B2-014", entry: "04:45 AM", duration: "8h 07m", durationMinutes: 487, status: "Alert", license: "BP-2024-111", entryTimestamp: createTimestamp(8, 7) },
@@ -228,22 +237,6 @@ export function DurationTracker() {
                     <span>{area.location}</span>
                   </div>
                 </div>
-                <div className="flex gap-4 text-sm">
-                  <div className="text-right">
-                    <div className="flex items-center gap-1.5 text-muted-foreground mb-1">
-                      <Timer className="w-3.5 h-3.5" />
-                      <span className="text-xs">Avg Duration</span>
-                    </div>
-                    <p className="font-bold text-foreground">{area.avgDuration}</p>
-                  </div>
-                  <div className="text-right">
-                    <div className="flex items-center gap-1.5 text-muted-foreground mb-1">
-                      <Clock className="w-3.5 h-3.5" />
-                      <span className="text-xs">Longest</span>
-                    </div>
-                    <p className="font-bold text-orange-600">{area.longestDuration}</p>
-                  </div>
-                </div>
               </div>
             </div>
 
@@ -257,6 +250,7 @@ export function DurationTracker() {
                     <th className="px-6 py-3 text-left text-muted-foreground font-medium text-xs">Duration</th>
                     <th className="px-6 py-3 text-left text-muted-foreground font-medium text-xs">Parking Fee</th>
                     <th className="px-6 py-3 text-left text-muted-foreground font-medium text-xs">Status</th>
+                    <th className="px-6 py-3 text-left text-muted-foreground font-medium text-xs">Action</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-border">
@@ -283,7 +277,7 @@ export function DurationTracker() {
                         <td className="px-6 py-4">
                           <div className="flex items-center gap-1.5">
                             <DollarSign className="w-3.5 h-3.5 text-green-600" />
-                            <span className="text-foreground font-bold">{fee}</span>
+                            <span className="text-foreground font-bold">Nu. {fee}</span>
                           </div>
                         </td>
                         <td className="px-6 py-4">
@@ -291,6 +285,16 @@ export function DurationTracker() {
                             {getStatusIcon(liveStatus)}
                             {liveStatus}
                           </Badge>
+                        </td>
+                        <td className="px-6 py-4">
+                          <Button
+                            size="sm"
+                            onClick={() => handlePayment(vehicle, area, totalMinutes, fee)}
+                            className="gap-1.5"
+                          >
+                            <CreditCard className="w-3.5 h-3.5" />
+                            Pay Now
+                          </Button>
                         </td>
                       </tr>
                     )
