@@ -35,7 +35,7 @@ def write_csv(results, output_path):
 
         for frame_nmr in results.keys():
             for car_id in results[frame_nmr].keys():
-                print(results[frame_nmr][car_id])
+                # Removed print statement to reduce console spam
                 if 'car' in results[frame_nmr][car_id].keys() and \
                    'license_plate' in results[frame_nmr][car_id].keys() and \
                    'text' in results[frame_nmr][car_id]['license_plate'].keys():
@@ -56,43 +56,48 @@ def write_csv(results, output_path):
                                                             results[frame_nmr][car_id]['license_plate']['text_score'])
                             )
         f.close()
+    
+    print(f"\n✅ Results saved to {output_path}")
 
 
 def license_complies_format(text):
     """
-    Check if the license plate text complies with the Bhutanese format.
-    Format: BT-1-A3269 or BT1A3269 (without dashes)
+    Check if the license plate text complies with a recognizable format.
+    Format: BP-1-C3275 or BT-1-A3269 (Bhutanese common formats)
+    Also accepts partial matches for debugging.
 
     Args:
         text (str): License plate text.
 
     Returns:
-        bool: True if the license plate complies with the format, False otherwise.
+        bool: True if the license plate complies with a recognizable format.
     """
     # Remove dashes and spaces for validation
     text_clean = text.replace('-', '').replace(' ', '')
     
-    # Bhutanese format: BT + 1 digit + 1 letter + 4 digits = 8 characters
-    if len(text_clean) < 7:  # At minimum BT1A123
+    # At minimum, need some characters
+    if len(text_clean) < 3:
         return False
     
-    # Check if starts with BT
-    if len(text_clean) >= 2 and text_clean[0:2] == 'BT':
-        # BT-1-A3269 format (8 chars: BT + digit + letter + 4 digits)
-        if len(text_clean) == 8:
-            if text_clean[2].isdigit() and \
-               text_clean[3] in string.ascii_uppercase and \
-               text_clean[4:8].isdigit():
+    # Check if starts with BP or BT (common Bhutanese prefixes)
+    if len(text_clean) >= 2 and text_clean[0:2] in ['BP', 'BT']:
+        # BP-1-C3275 format (8 chars: BP + digit + letter + 4 digits)
+        if len(text_clean) >= 6:  # Lowered from 8 to accept partial reads
+            # Has BP/BT prefix and some numbers
+            has_digit = any(c.isdigit() for c in text_clean[2:])
+            if has_digit:
                 return True
-        # Also accept 7 chars without BT prefix if detected (1-A3269)
-        elif len(text_clean) == 7 and text_clean[0].isdigit():
-            return True
-    # Accept format without BT prefix: 1A3269 or 1-A3269
-    elif len(text_clean) >= 6:
-        if text_clean[0].isdigit() and \
-           text_clean[1] in string.ascii_uppercase and \
-           text_clean[2:].isdigit():
-            return True
+    
+    # Accept format with letter and numbers (even without BP/BT prefix)
+    has_digit = any(c.isdigit() for c in text_clean)
+    has_letter = any(c.isalpha() for c in text_clean)
+    
+    if has_digit and has_letter and len(text_clean) >= 4:
+        return True
+    
+    # Also accept if it's mostly numbers (could be partial plate read)
+    if len(text_clean) >= 4 and sum(c.isdigit() for c in text_clean) >= 3:
+        return True
     
     return False
 
@@ -100,12 +105,15 @@ def license_complies_format(text):
 def format_license(text):
     """
     Format the Bhutanese license plate text by cleaning and standardizing it.
+    Bhutanese format: BP-X-YNNNN or BT-X-YNNNN
+    Example: BP-1-E8413, BT-2-A1234
+    Also handles partial reads gracefully.
 
     Args:
         text (str): License plate text.
 
     Returns:
-        str: Formatted license plate text (BT-1-A3269 format).
+        str: Formatted license plate text in BP-X-YNNNN format.
     """
     # Remove spaces and standardize
     text_clean = text.replace(' ', '').upper()
@@ -118,21 +126,50 @@ def format_license(text):
     # Apply character corrections (OCR might misread some characters)
     corrected = ''
     for i, char in enumerate(text_clean):
-        # For the letter position (after BT and digit), convert numbers to letters
-        if len(text_clean) >= 4 and i == 3 and char in dict_int_to_char:
-            corrected += dict_int_to_char[char]
-        # For digit positions, convert letters to numbers
-        elif char in dict_char_to_int:
-            corrected += dict_char_to_int[char]
+        # Position-specific corrections for Bhutanese format
+        # BP/BT should stay as letters
+        if i < 2:
+            if char in dict_int_to_char:
+                corrected += dict_int_to_char[char]
+            else:
+                corrected += char
+        # Position 2 should be a digit (0-9)
+        elif i == 2:
+            if char in dict_char_to_int:
+                corrected += dict_char_to_int[char]
+            else:
+                corrected += char
+        # Position 3 should be a letter (A-Z)
+        elif i == 3:
+            if char in dict_int_to_char:
+                corrected += dict_int_to_char[char]
+            else:
+                corrected += char
+        # Remaining should be digits
         else:
-            corrected += char
+            if char in dict_char_to_int:
+                corrected += dict_char_to_int[char]
+            else:
+                corrected += char
     
-    # Format as BT-1-A3269
-    if len(corrected) >= 8 and corrected[0:2] == 'BT':
-        return f"BT-{corrected[2]}-{corrected[3:]}"
+    # Format as BP-X-YNNNN
+    if len(corrected) >= 7 and corrected[0:2] in ['BP', 'BT']:
+        # BP1E8413 -> BP-1-E8413
+        return f"{corrected[0:2]}-{corrected[2]}-{corrected[3:]}"
     elif len(corrected) >= 6:
-        # Add BT prefix if missing
-        return f"BT-{corrected[0]}-{corrected[1:]}"
+        # If missing BP/BT prefix, add it
+        # 1E8413 -> BP-1-E8413
+        return f"BP-{corrected[0]}-{corrected[1:]}"
+    elif len(corrected) >= 4:
+        # Partial read - format what we have
+        # E8413 -> E8413 (keep as is)
+        # BP1E -> BP-1-E
+        if corrected[0:2] in ['BP', 'BT']:
+            if len(corrected) >= 4:
+                return f"{corrected[0:2]}-{corrected[2]}-{corrected[3:]}"
+            else:
+                return corrected
+        return corrected
     
     return corrected
 
@@ -148,68 +185,95 @@ def read_license_plate(license_plate_crop):
         tuple: Tuple containing the formatted license plate text and its confidence score.
     """
     
-    # Try multiple preprocessing techniques
+    # Try multiple preprocessing techniques optimized for red/pink Bhutanese plates
     import cv2
     
-    # 1. Original grayscale/threshold (already done in main.py)
-    detections = reader.readtext(license_plate_crop)
+    # Store all candidates from different preprocessing methods
+    all_candidates = []
     
-    # 2. If that fails, try with adaptive threshold
-    if not detections or all(d[2] < 0.5 for d in detections):
-        adaptive_thresh = cv2.adaptiveThreshold(
-            license_plate_crop, 255, 
-            cv2.ADAPTIVE_THRESH_GAUSSIAN_C, 
-            cv2.THRESH_BINARY, 11, 2
-        )
-        detections = reader.readtext(adaptive_thresh)
+    # Convert to grayscale
+    gray = cv2.cvtColor(license_plate_crop, cv2.COLOR_BGR2GRAY)
     
-    # 3. If still fails, try with inverted image
-    if not detections or all(d[2] < 0.5 for d in detections):
-        inverted = cv2.bitwise_not(license_plate_crop)
-        detections = reader.readtext(inverted)
+    # METHOD 1: Red channel extraction (best for red/pink Bhutanese plates)
+    red_channel = license_plate_crop[:, :, 2]  # Extract red channel
+    _, red_thresh = cv2.threshold(red_channel, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+    detections = reader.readtext(red_thresh)
+    all_candidates.extend([(d[1], d[2], 'red_channel') for d in detections])
     
-    # 4. Try with upscaled image for better OCR
-    if not detections or all(d[2] < 0.5 for d in detections):
-        height, width = license_plate_crop.shape[:2]
-        upscaled = cv2.resize(license_plate_crop, (width * 2, height * 2), interpolation=cv2.INTER_CUBIC)
-        detections = reader.readtext(upscaled)
+    # METHOD 2: Inverted red channel
+    red_inverted = cv2.bitwise_not(red_thresh)
+    detections = reader.readtext(red_inverted)
+    all_candidates.extend([(d[1], d[2], 'red_inverted') for d in detections])
     
-    # Debug: print all detections
+    # METHOD 3: High upscaling + CLAHE for better character recognition
+    h, w = gray.shape
+    upscaled = cv2.resize(gray, (w * 4, h * 4), interpolation=cv2.INTER_CUBIC)
+    clahe = cv2.createCLAHE(clipLimit=3.0, tileGridSize=(8, 8))
+    enhanced = clahe.apply(upscaled)
+    detections = reader.readtext(enhanced)
+    all_candidates.extend([(d[1], d[2], 'upscaled_clahe') for d in detections])
+    
+    # METHOD 4: Adaptive threshold on upscaled image
+    adaptive = cv2.adaptiveThreshold(upscaled, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, 
+                                     cv2.THRESH_BINARY, 11, 2)
+    detections = reader.readtext(adaptive)
+    all_candidates.extend([(d[1], d[2], 'adaptive_upscaled') for d in detections])
+    
+    # METHOD 5: Inverted adaptive threshold
+    adaptive_inv = cv2.bitwise_not(adaptive)
+    detections = reader.readtext(adaptive_inv)
+    all_candidates.extend([(d[1], d[2], 'adaptive_inverted') for d in detections])
+    
+    # METHOD 6: HSV value channel (good for colored plates)
+    hsv = cv2.cvtColor(license_plate_crop, cv2.COLOR_BGR2HSV)
+    value_channel = hsv[:, :, 2]
+    value_upscaled = cv2.resize(value_channel, (value_channel.shape[1] * 4, value_channel.shape[0] * 4), 
+                                interpolation=cv2.INTER_CUBIC)
+    _, value_thresh = cv2.threshold(value_upscaled, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+    detections = reader.readtext(value_thresh)
+    all_candidates.extend([(d[1], d[2], 'hsv_value') for d in detections])
+    
+    # Process all candidates and find the best match
     best_match = None
     best_score = 0
+    fallback_match = None  # Store any match, even partial
+    fallback_score = 0
     
-    for detection in detections:
-        bbox, text, score = detection
-        print(f"[DEBUG] OCR detected: '{text}' (confidence: {score:.2f})")
+    for text, score, method in all_candidates:
+        # Clean the text
+        text = text.upper().replace(' ', '').replace('-', '').replace('.', '').replace(',', '')
+        text = ''.join(c for c in text if c.isalnum())
         
-        text = text.upper().replace(' ', '').replace('-', '')
-        print(f"[DEBUG] After cleaning: '{text}'")
-
-        if license_complies_format(text):
+        # Skip very short text
+        if len(text) < 2:
+            continue
+        
+        # Keep track of ANY alphanumeric text as fallback
+        if len(text) >= 3 and score > fallback_score:
+            has_digit = any(c.isdigit() for c in text)
+            has_letter = any(c.isalpha() for c in text)
+            if has_digit or has_letter:
+                fallback_match = (format_license(text), score)
+                fallback_score = score
+        
+        # Prioritize BP/BT format plates (boost their score)
+        if text.startswith('BP') or text.startswith('BT'):
             formatted = format_license(text)
-            print(f"[DEBUG] ✓ ACCEPTED and formatted as: '{formatted}'")
+            boosted_score = score * 1.5  # Boost proper Bhutanese format
+            if boosted_score > best_score:
+                best_match = (formatted, score)
+                best_score = boosted_score
+        elif license_complies_format(text):
+            formatted = format_license(text)
             if score > best_score:
                 best_match = (formatted, score)
                 best_score = score
-        else:
-            # Try partial matching - accept if it contains recognizable patterns
-            if len(text) >= 4 and score > 0.3:
-                # Check if it has some digit + letter pattern
-                has_digit = any(c.isdigit() for c in text)
-                has_letter = any(c.isalpha() for c in text)
-                if has_digit and has_letter:
-                    print(f"[DEBUG] ~ PARTIAL MATCH (score: {score:.2f}) - attempting to use: '{text}'")
-                    formatted = format_license(text)
-                    if score > best_score:
-                        best_match = (formatted, score)
-                        best_score = score
-                else:
-                    print(f"[DEBUG] ✗ REJECTED - does not match Bhutanese format")
-            else:
-                print(f"[DEBUG] ✗ REJECTED - does not match Bhutanese format")
     
+    # Return best match, or fallback if no proper format found
     if best_match:
         return best_match
+    elif fallback_match:
+        return fallback_match  # Return partial/incomplete reads
     
     return None, None
 
