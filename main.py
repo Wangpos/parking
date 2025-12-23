@@ -7,18 +7,19 @@ from ultralytics import YOLO
 import cv2
 import numpy as np
 from sort.sort import Sort
-from util import get_car, read_license_plate, write_csv
+from util import get_car, write_csv
+from improved_ocr import read_bhutanese_plate
 
 # ======================== CONFIGURATION ========================
-VIDEO_PATH = './sample.mp4'
+VIDEO_PATH = './sample2.mp4'
 OUTPUT_VIDEO_PATH = './output_with_plates.mp4'
 CSV_OUTPUT_PATH = './test.csv'
 PROCESS_EVERY_N_FRAMES = 1  # Process every frame for maximum detection
 VEHICLES = [2, 3, 5, 7]  # COCO classes: car, motorcycle, bus, truck
 FONT_SCALE = 1.2
 MIN_PLATE_CONFIDENCE = 0.05  # Very low threshold - show partial detections
-DEBUG_MODE = False  # Show debug output and save plate crops
-SAVE_PLATE_CROPS = False  # Save detected plate images for debugging
+DEBUG_MODE = True  # 🔧 ENABLED to see what's happening
+SAVE_PLATE_CROPS = True  # 🔧 ENABLED to save plate crops
 SHOW_PARTIAL_PLATES = True  # Show partial/low confidence plates
 # ================================================================
 
@@ -54,21 +55,32 @@ video_writer = cv2.VideoWriter(OUTPUT_VIDEO_PATH, fourcc, fps, (width, height))
 frame_num = 0
 plates_found = 0
 
-for frame_result in vehicle_detector.predict(source=VIDEO_PATH, stream=True, verbose=False):
+for frame_result in vehicle_detector.predict(source=VIDEO_PATH, stream=True, verbose=False, conf=0.1):
     results[frame_num] = {}
     original = frame_result.orig_img
     display = original.copy()
     
     # Detect vehicles
     detections = []
-    for det in frame_result.boxes.data.tolist():
+    all_dets = frame_result.boxes.data.tolist()
+    
+    if DEBUG_MODE and frame_num % 30 == 0:  # Print every 30 frames
+        print(f"\n📊 Frame {frame_num}: Total YOLO detections: {len(all_dets)}")
+    
+    for det in all_dets:
         x1, y1, x2, y2, conf, cls = det
+        if DEBUG_MODE and frame_num % 30 == 0:
+            print(f"  Class {int(cls)}: conf={conf:.2f}")
+        
         if int(cls) in VEHICLES:
             detections.append([x1, y1, x2, y2, conf])
             cv2.rectangle(display, (int(x1), int(y1)), (int(x2), int(y2)), (0, 255, 0), 2)
     
     # Track vehicles
     tracks = tracker.update(np.asarray(detections))
+    
+    if DEBUG_MODE and frame_num % 30 == 0:
+        print(f"  ✅ Vehicles detected: {len(detections)}, Tracked: {len(tracks)}")
     
     # Draw tracked vehicles with plates
     for track in tracks:
@@ -106,10 +118,10 @@ for frame_result in vehicle_detector.predict(source=VIDEO_PATH, stream=True, ver
     
     # Detect license plates (every N frames)
     if frame_num % PROCESS_EVERY_N_FRAMES == 0:
-        plates = plate_detector(original, conf=0.2, verbose=False)[0]  # Lower confidence to detect more plates
+        plates = plate_detector(original, conf=0.15, verbose=False)[0]  # 🔧 Lowered to 0.15
         
-        if DEBUG_MODE and len(plates.boxes.data) > 0:
-            print(f"\nFrame {frame_num}: YOLO detected {len(plates.boxes.data)} plate(s)")
+        if DEBUG_MODE and frame_num % 30 == 0:
+            print(f"  🔍 Plates detected: {len(plates.boxes.data)}")
         
         for plate in plates.boxes.data.tolist():
             px1, py1, px2, py2, pconf, pcls = plate
@@ -145,8 +157,8 @@ for frame_result in vehicle_detector.predict(source=VIDEO_PATH, stream=True, ver
             
             # Process plate if we have a vehicle
             if car_id != -1:
-                # Crop with padding
-                pad = 5
+                # Crop with MORE padding for better OCR
+                pad = 10  # Increased padding
                 y1p = max(0, int(py1) - pad)
                 y2p = min(original.shape[0], int(py2) + pad)
                 x1p = max(0, int(px1) - pad)
@@ -159,13 +171,15 @@ for frame_result in vehicle_detector.predict(source=VIDEO_PATH, stream=True, ver
                     continue
                 
                 # Save original crop for debugging
-                if SAVE_PLATE_CROPS and frame_num % 10 == 0:  # Save every 10th frame
+                save_debug = SAVE_PLATE_CROPS and frame_num % 10 == 0
+                if save_debug:
                     cv2.imwrite(f'plate_crops/car{car_id}_frame{frame_num}.jpg', crop)
                 
-                # Read plate - pass original crop, preprocessing will be done in util.py
+                # Read plate using improved OCR
                 if DEBUG_MODE:
-                    print(f"  Running OCR on plate for car {car_id}...")
-                text, score = read_license_plate(crop)
+                    print(f"  Running improved OCR on plate for car {car_id}...")
+                text, score = read_bhutanese_plate(crop, save_debug=save_debug, 
+                                                  frame_num=frame_num, vehicle_id=car_id)
                 
                 if DEBUG_MODE:
                     if text:

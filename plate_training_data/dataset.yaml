@@ -1,0 +1,14 @@
+# Bhutanese License Plate Dataset Configuration
+path: /Users/tsheringwangpodorji/Documents/Edruk/parking/plate_training_data
+train: images/train
+val: images/val
+
+# Classes
+nc: 1  # number of classes
+names: ['license_plate']  # class names
+
+# Bhutanese plate characteristics:
+# - Formats: BP-X-YNNNN, BT-X-YNNNN, BG-X-YNNNN
+# - Colors: Red, Yellow, Blue, Green, White backgrounds
+# - Contains Bhutanese script (Dzongkha) at top
+# - Typically rectangular with specific aspect ratio
